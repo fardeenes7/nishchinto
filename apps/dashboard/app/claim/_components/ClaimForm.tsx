@@ -10,7 +10,7 @@
 
 import { useActionState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
 import { claimShopAction, type ClaimActionState } from "../../actions";
 import Link from "next/link";
@@ -39,7 +39,8 @@ export function ClaimForm({ token }: { token: string }) {
     );
 
     const form = useForm<ClaimFormValues>({
-        resolver: zodResolver(claimSchema),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolver: standardSchemaResolver(claimSchema) as any,
         defaultValues: { subdomain: "", password: "", passwordConfirm: "" },
     });
 

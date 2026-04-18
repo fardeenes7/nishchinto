@@ -47,6 +47,14 @@ export type FetcherBody =
 
 export interface FetcherInit extends Omit<RequestInit, 'body'> {
     body?: FetcherBody;
+    /**
+     * Next.js-specific fetch extension for ISR / on-demand revalidation.
+     * Ignored outside of Next.js environments.
+     */
+    next?: {
+        revalidate?: number | false;
+        tags?: string[];
+    };
 }
 
 // ─── Internal Helpers ────────────────────────────────────────────────────────

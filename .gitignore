@@ -34,3 +34,7 @@ build/
 
 # Cloud Deployment
 .vercel/
+
+# Local env overrides (never commit)
+.env.local
+.env.*.local
