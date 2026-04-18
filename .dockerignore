@@ -1,0 +1,24 @@
+.git
+.gitignore
+.dockerignore
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.next/
+out/
+build/
+.turbo/
+.vercel/
+
+# Envs
+.env
+.env*.local
+
+# IDE
+.idea/
+.vscode/
+README.md
