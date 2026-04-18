@@ -1,102 +1,85 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+"use client";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
+import { useEffect, useState } from "react";
+// Assumes ui/button is standard, we'll just mock the design blocks for now.
+// In reality, you'd fetch this using React Query from `GET /api/v1/admin/waitlist/`
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
+type WaitlistEntry = {
+  id: number;
+  email: string;
+  phone_number: string;
+  survey_data: any;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  created_at: string;
+}
+
+export default function AdminWaitlistDashboard() {
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Example placeholder fetch map
+  useEffect(() => {
+    // const res = await fetch('/api/v1/admin/waitlist/', { headers: { Authorization: `Bearer ${token}` }})
+    // setEntries(await res.json());
+    setLoading(false);
+  }, []);
+
+  async function handleApprove(id: number) {
+    // API logic to hit POST /api/v1/admin/waitlist/<id>/approve/
+    // Update local state optimistic UI
+  }
+
+  if (loading) return <div className="p-10 font-bold">Loading CRM...</div>;
 
   return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
-
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.dev/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-background p-10">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Marketing Waitlist</h1>
+          <p className="text-muted-foreground">Review inbound pipeline and approve merchant SaaS tenants.</p>
         </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.dev?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.dev →
-        </a>
-      </footer>
-    </div>
+
+        <div className="rounded-md border border-border bg-card">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-muted text-muted-foreground sticky top-0">
+              <tr>
+                <th className="px-4 py-3 font-medium">Email</th>
+                <th className="px-4 py-3 font-medium">Phone Number</th>
+                <th className="px-4 py-3 font-medium">Expected Orders</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {entries.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">No entries found.</td></tr>
+              ) : (
+                entries.map(entry => (
+                  <tr key={entry.id} className="hover:bg-muted/50">
+                    <td className="px-4 py-3 font-medium">{entry.email}</td>
+                    <td className="px-4 py-3">{entry.phone_number}</td>
+                    <td className="px-4 py-3">{entry.survey_data?.estimated_monthly_orders || "N/A"}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${entry.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-600' : 'bg-green-500/10 text-green-600'}`}>
+                        {entry.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {entry.status === 'PENDING' && (
+                         <button 
+                            onClick={() => handleApprove(entry.id)}
+                            className="bg-primary text-primary-foreground text-xs px-3 py-1.5 rounded-md hover:bg-primary/90 font-medium transition-colors">
+                           Approve
+                         </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
   );
 }
