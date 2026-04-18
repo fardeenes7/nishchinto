@@ -12,7 +12,7 @@ import { useActionState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { claimShopAction, type ClaimActionState } from "@/app/actions";
+import { claimShopAction, type ClaimActionState } from "../../actions";
 import Link from "next/link";
 
 const claimSchema = z.object({

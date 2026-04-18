@@ -75,6 +75,9 @@ importers:
 
   apps/dashboard:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.72.1)
       '@next/third-parties':
         specifier: ^16.2.4
         version: 16.2.4(next@16.2.0)(react@19.2.5)
@@ -99,6 +102,12 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.5(react@19.2.5)
+      react-hook-form:
+        specifier: ^7.72.1
+        version: 7.72.1(react@19.2.5)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*

@@ -8,7 +8,7 @@
  */
 
 import { useActionState } from "react";
-import { approveWaitlistEntryAction, type ApproveActionState } from "@/app/actions";
+import { approveWaitlistEntryAction, type ApproveActionState } from "../actions";
 
 const initialState: ApproveActionState = { status: "idle" };
 
