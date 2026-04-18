@@ -14,7 +14,7 @@ export const config = {
     ]
 };
 
-export default function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
     const url = req.nextUrl;
 
     // Get hostname of request (e.g. demo.nishchinto.com.bd, nishchinto.com.bd)
