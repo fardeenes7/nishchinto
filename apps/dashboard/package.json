@@ -11,6 +11,7 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.4",
     "@repo/ui": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^1.8.0",

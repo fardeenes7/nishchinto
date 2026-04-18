@@ -1,6 +1,7 @@
 import "@repo/ui/globals.css";
 import { Metadata } from "next";
 import { Inter, Baloo_Da_2 } from "next/font/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"] });
 const baloo = Baloo_Da_2({});
@@ -31,10 +32,12 @@ export default async function RootLayout({
     params: Promise<{ lang: string }>;
 }) {
     const { lang } = await params;
+    const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+
     return (
         <html lang={lang} suppressHydrationWarning>
+            {gtmId && <GoogleTagManager gtmId={gtmId} />}
             <body className={`${baloo.className} ${inter.className}`}>
-                {/* We would dynamically inject GTM here using an env var later */}
                 {children}
             </body>
         </html>

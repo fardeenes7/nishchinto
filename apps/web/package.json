@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",
+        "@next/third-parties": "^16.2.4",
         "@repo/ui": "workspace:*",
         "@tabler/icons-react": "^3.41.1",
         "class-variance-authority": "^0.7.1",
