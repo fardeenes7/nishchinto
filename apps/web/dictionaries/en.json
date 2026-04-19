@@ -1,10 +1,43 @@
 {
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "waitlist": "Join Waitlist"
+  },
   "hero": {
-    "title": "Launch Your Online Store with Nishchinto",
-    "subtitle": "The most secure, scalable SaaS engine for local merchants in Bangladesh.",
-    "cta": "Join the Beta Waitlist"
+    "title": "Build Your Digital Empire, Stress-Free.",
+    "subtitle": "The most secure, scalable SaaS engine designed for local merchants in Bangladesh. Launch your storefront, manage social orders, and grow your business with Nishchinte.",
+    "cta": "Start Your Journey",
+    "tagline": "ব্যবসা হোক নিশ্চিন্তে"
+  },
+  "features": {
+    "title": "Everything you need to grow",
+    "subtitle": "From social media integration to automated inventory, we handle the complexity so you can focus on sales.",
+    "items": [
+      {
+        "title": "Smart Storefronts",
+        "description": "Auto-generate beautiful, SEO-optimized stores that work perfectly on mobile and desktop."
+      },
+      {
+        "title": "Social Sync",
+        "description": "Connect your Facebook and Instagram pages. Sync products and manage orders in one place."
+      },
+      {
+        "title": "AI-Powered Growth",
+        "description": "Leverage AI to write product descriptions, optimize ads, and engage with customers."
+      }
+    ]
+  },
+  "trust": {
+    "title": "Trusted by hundreds of merchants",
+    "subtitle": "Join a community of successful businesses scaling their operations with our platform."
+  },
+  "waitlist": {
+    "title": "Ready to scale?",
+    "subtitle": "Join our exclusive beta program and be among the first to launch your store."
   },
   "footer": {
-    "powered": "Powered by Nishchinto"
+    "powered": "Powered by Nishchinto",
+    "all_rights": "All rights reserved."
   }
 }
