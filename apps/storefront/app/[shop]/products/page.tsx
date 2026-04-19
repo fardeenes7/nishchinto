@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStorefrontProducts, getCategories } from "@repo/api";
+import { getStorefrontProducts, getCategories, getStorefrontShop } from "@repo/api";
 import { publicFetch } from "@repo/api";
 
 interface ShopProductsPageProps {
@@ -23,10 +23,10 @@ export async function generateMetadata({
   };
 }
 
-function formatPrice(price: string) {
-  return new Intl.NumberFormat("bn-BD", {
+function formatPrice(price: string, currency: string = "BDT") {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "BDT",
+    currency: currency,
     minimumFractionDigits: 0,
   }).format(parseFloat(price));
 }
@@ -39,11 +39,14 @@ export default async function ShopProductsPage({
   const sp = await searchParams;
   const page = parseInt(sp.page ?? "1");
 
-  const res = await getStorefrontProducts(shop, {
-    category: sp.category,
-    page,
-    page_size: 24,
-  });
+  const [res, shopRes] = await Promise.all([
+    getStorefrontProducts(shop, {
+      category: sp.category,
+      page,
+      page_size: 24,
+    }),
+    getStorefrontShop(shop),
+  ]);
 
   if (!res.success) {
     return (
@@ -54,6 +57,7 @@ export default async function ShopProductsPage({
   }
 
   const { results: products, count, num_pages } = res.data;
+  const baseCurrency = shopRes.success ? shopRes.data.base_currency : "BDT";
 
   return (
     <main className="min-h-screen bg-background">
@@ -117,11 +121,11 @@ export default async function ShopProductsPage({
                   </h2>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm">
-                      {formatPrice(product.base_price)}
+                      {formatPrice(product.base_price, baseCurrency)}
                     </span>
                     {product.compare_at_price && (
                       <span className="text-xs text-muted-foreground line-through">
-                        {formatPrice(product.compare_at_price)}
+                        {formatPrice(product.compare_at_price, baseCurrency)}
                       </span>
                     )}
                   </div>

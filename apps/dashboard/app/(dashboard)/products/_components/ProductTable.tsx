@@ -47,13 +47,14 @@ import { deleteProduct, publishProduct, archiveProduct } from "@repo/api";
 interface ProductTableProps {
   products: ProductListItem[];
   shopId: string;
+  currency?: string;
   isLoading?: boolean;
 }
 
-function formatPrice(price: string) {
-  return new Intl.NumberFormat("bn-BD", {
+function formatPrice(price: string, currency: string = "BDT") {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "BDT",
+    currency: currency,
     minimumFractionDigits: 0,
   }).format(parseFloat(price));
 }
@@ -61,6 +62,7 @@ function formatPrice(price: string) {
 export function ProductTable({
   products,
   shopId,
+  currency = "BDT",
   isLoading,
 }: ProductTableProps) {
   const router = useRouter();
@@ -192,10 +194,10 @@ export function ProductTable({
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
                   <div className="flex flex-col items-end">
-                    <span>{formatPrice(product.base_price)}</span>
+                    <span>{formatPrice(product.base_price, currency)}</span>
                     {product.compare_at_price && (
                       <span className="text-xs text-muted-foreground line-through">
-                        {formatPrice(product.compare_at_price)}
+                        {formatPrice(product.compare_at_price, currency)}
                       </span>
                     )}
                   </div>

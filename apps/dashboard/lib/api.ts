@@ -20,6 +20,9 @@ import { cookies } from "next/headers";
 import {
   apiFetch,
   getCategories as _getCategories,
+  createCategory as _createCategory,
+  updateCategory as _updateCategory,
+  deleteCategory as _deleteCategory,
   getProducts as _getProducts,
   getProduct as _getProduct,
   createProduct as _createProduct,
@@ -35,6 +38,8 @@ import {
   getPresignedUploadUrl as _getPresignedUploadUrl,
   confirmUpload as _confirmUpload,
   deleteMedia as _deleteMedia,
+  getShop as _getShop,
+  updateShop as _updateShop,
   type FetcherInit,
   type ApiResponse,
 } from "@repo/api";
@@ -58,6 +63,25 @@ export async function serverFetch<T = unknown>(
 
 export async function getCategories(shopId: string) {
   return _getCategories(shopId, await getToken());
+}
+
+export async function createCategory(
+  shopId: string,
+  data: Parameters<typeof _createCategory>[1],
+) {
+  return _createCategory(shopId, data, await getToken());
+}
+
+export async function updateCategory(
+  shopId: string,
+  categoryId: string,
+  data: Parameters<typeof _updateCategory>[2],
+) {
+  return _updateCategory(shopId, categoryId, data, await getToken());
+}
+
+export async function deleteCategory(shopId: string, categoryId: string) {
+  return _deleteCategory(shopId, categoryId, await getToken());
 }
 
 export async function getProducts(
@@ -148,4 +172,15 @@ export async function confirmUpload(
 
 export async function deleteMedia(mediaId: string, shopId: string) {
   return _deleteMedia(mediaId, shopId, await getToken());
+}
+
+export async function getShop(shopId: string) {
+  return _getShop(shopId, await getToken());
+}
+
+export async function updateShop(
+  shopId: string,
+  data: Parameters<typeof _updateShop>[1],
+) {
+  return _updateShop(shopId, data, await getToken());
 }

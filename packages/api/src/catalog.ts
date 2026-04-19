@@ -113,6 +113,13 @@ export interface ShopTrackingConfig {
   updated_at: string;
 }
 
+export interface StorefrontShop {
+  id: string;
+  name: string;
+  subdomain: string;
+  base_currency: string;
+}
+
 export interface PresignedUploadResponse {
   upload_url: string;
   s3_key: string;
@@ -429,5 +436,14 @@ export async function getStorefrontTrackingConfig(
   return publicFetch<ShopTrackingConfig>(
     `/api/v1/storefront/${shopSlug}/tracking/`,
     { next: { revalidate: 300 } },
+  );
+}
+
+export async function getStorefrontShop(
+  shopSlug: string,
+): Promise<ApiResponse<StorefrontShop>> {
+  return publicFetch<StorefrontShop>(
+    `/api/v1/storefront/${shopSlug}/config/`,
+    { next: { revalidate: 3600 } }, // Cache shop config for 1 hour
   );
 }

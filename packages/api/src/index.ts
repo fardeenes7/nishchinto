@@ -12,3 +12,4 @@ export { publicFetch, type ApiResponse, type ApiSuccess, type ApiError, type Fet
 export { apiFetch } from './auth-fetcher';
 export type * from './schema';
 export * from './catalog';
+export * from './shops';

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStorefrontProduct } from "@repo/api";
+import { getStorefrontProduct, getStorefrontShop } from "@repo/api";
 
 interface ProductDetailPageProps {
   params: Promise<{ shop: string; slug: string }>;
@@ -20,6 +20,17 @@ export async function generateMetadata({
     product.product_media.find((m) => m.is_thumbnail)?.media.cdn_url ??
     product.product_media[0]?.media.cdn_url;
 
+  // Spec (phase_0_3_detailed_plan.md, post_v03_debrief.md item 1.2):
+  // Use the dynamic /api/og route for OG images.
+  // Title is truncated at 120 chars inside the route itself.
+  const ogParams = new URLSearchParams({
+    title: product.seo_title || product.name,
+    price: product.base_price,
+    shop_name: shop,
+    ...(thumbnail ? { image_url: thumbnail } : {}),
+  });
+  const ogImageUrl = `/api/og?${ogParams.toString()}`;
+
   return {
     title: product.seo_title || product.name,
     description:
@@ -31,15 +42,16 @@ export async function generateMetadata({
       description:
         product.seo_description ||
         product.description.replace(/<[^>]*>/g, "").slice(0, 160),
-      images: thumbnail ? [{ url: thumbnail, width: 1200, height: 630 }] : [],
+      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
     },
   };
 }
 
-function formatPrice(price: string) {
-  return new Intl.NumberFormat("bn-BD", {
+
+function formatPrice(price: string, currency: string = "BDT") {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "BDT",
+    currency: currency,
     minimumFractionDigits: 0,
   }).format(parseFloat(price));
 }
@@ -48,11 +60,14 @@ export default async function StorefrontProductDetailPage({
   params,
 }: ProductDetailPageProps) {
   const { shop, slug } = await params;
-  const res = await getStorefrontProduct(shop, slug);
+  const [res, shopRes] = await Promise.all([
+    getStorefrontProduct(shop, slug),
+    getStorefrontShop(shop),
+  ]);
 
   if (!res.success) notFound();
-
   const product = res.data;
+  const baseCurrency = shopRes.success ? shopRes.data.base_currency : "BDT";
   const thumbnail =
     product.product_media.find((m) => m.is_thumbnail)?.media.cdn_url ??
     product.product_media[0]?.media.cdn_url;
@@ -163,11 +178,11 @@ export default async function StorefrontProductDetailPage({
             {/* Pricing */}
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold">
-                {formatPrice(product.base_price)}
+                {formatPrice(product.base_price, baseCurrency)}
               </span>
               {product.compare_at_price && (
                 <span className="text-xl text-muted-foreground line-through">
-                  {formatPrice(product.compare_at_price)}
+                  {formatPrice(product.compare_at_price, baseCurrency)}
                 </span>
               )}
               {product.compare_at_price && (

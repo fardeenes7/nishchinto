@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getProducts } from "@/lib/api";
+import { getProducts, getShop } from "@/lib/api";
 import { Button } from "@repo/ui/components/ui/button";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
 import { IconPlus } from "@tabler/icons-react";
@@ -34,12 +34,15 @@ async function ProductsContent({
   search?: string;
   page: number;
 }) {
-  const result = await getProducts(MOCK_SHOP_ID, {
-    status: status && status !== "all" ? status : undefined,
-    search,
-    page,
-    page_size: 20,
-  });
+  const [result, shopResult] = await Promise.all([
+    getProducts(MOCK_SHOP_ID, {
+      status: status && status !== "all" ? status : undefined,
+      search,
+      page,
+      page_size: 20,
+    }),
+    getShop(MOCK_SHOP_ID),
+  ]);
 
   if (!result.success) {
     return (
@@ -56,7 +59,11 @@ async function ProductsContent({
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>{count} product{count !== 1 ? "s" : ""} total</span>
       </div>
-      <ProductTable products={results} shopId={MOCK_SHOP_ID} />
+      <ProductTable
+        products={results}
+        shopId={MOCK_SHOP_ID}
+        currency={shopResult.success ? shopResult.data.base_currency : "BDT"}
+      />
       {num_pages > 1 && (
         <Pagination>
           <PaginationContent>
