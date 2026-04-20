@@ -20,7 +20,7 @@ export async function generateMetadata({
     product.product_media.find((m) => m.is_thumbnail)?.media.cdn_url ??
     product.product_media[0]?.media.cdn_url;
 
-  // Spec (phase_0_3_detailed_plan.md, post_v03_debrief.md item 1.2):
+  // Spec (v0_3_detailed_plan.md, post_v03_debrief.md item 1.2):
   // Use the dynamic /api/og route for OG images.
   // Title is truncated at 120 chars inside the route itself.
   const ogParams = new URLSearchParams({

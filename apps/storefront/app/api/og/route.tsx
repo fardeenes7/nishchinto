@@ -1,7 +1,7 @@
 /**
  * Storefront dynamic OG image route.
  *
- * Spec (phase_0_3_detailed_plan.md + post_v03_debrief.md item 1.2):
+ * Spec (v0_3_detailed_plan.md + post_v03_debrief.md item 1.2):
  *   - Query params: ?title=&price=&image_url=&shop_name=
  *   - Title truncated at 120 characters (hard rule)
  *   - Fallback: branded placeholder if image_url is absent or fails
