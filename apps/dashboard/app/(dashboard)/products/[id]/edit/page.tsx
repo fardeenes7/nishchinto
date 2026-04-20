@@ -1,42 +1,52 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProduct, getCategories } from "@/lib/api";
+import { getProduct, getCategories, getProductSocialActivity } from "@/lib/api";
+import { requireActiveShopContext } from "@/lib/shop-context";
 import { ProductForm } from "../../_components/ProductForm";
-
-const MOCK_SHOP_ID = process.env.MOCK_SHOP_ID ?? "";
+import { ProductSocialTimeline } from "../../_components/ProductSocialTimeline";
 
 interface EditProductPageProps {
-  params: Promise<{ id: string }>;
+    params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({
-  params,
+    params,
 }: EditProductPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const res = await getProduct(MOCK_SHOP_ID, id);
-  if (!res.success) return { title: "Edit Product | Nishchinto Dashboard" };
-  return {
-    title: `Edit: ${res.data.name} | Nishchinto Dashboard`,
-  };
+    const activeShop = await requireActiveShopContext();
+    const { id } = await params;
+    const res = await getProduct(activeShop.shopId, id);
+    if (!res.success) return { title: "Edit Product | Nishchinto Dashboard" };
+    return {
+        title: `Edit: ${res.data.name} | Nishchinto Dashboard`,
+    };
 }
 
-export default async function EditProductPage({ params }: EditProductPageProps) {
-  const { id } = await params;
-  const [productRes, categoriesRes] = await Promise.all([
-    getProduct(MOCK_SHOP_ID, id),
-    getCategories(MOCK_SHOP_ID),
-  ]);
+export default async function EditProductPage({
+    params,
+}: EditProductPageProps) {
+    const activeShop = await requireActiveShopContext();
+    const { id } = await params;
+    const [productRes, categoriesRes] = await Promise.all([
+        getProduct(activeShop.shopId, id),
+        getCategories(activeShop.shopId),
+    ]);
 
-  if (!productRes.success) notFound();
+    if (!productRes.success) notFound();
 
-  const categories = categoriesRes.success ? categoriesRes.data : [];
+    const categories = categoriesRes.success ? categoriesRes.data : [];
+    const socialLogsRes = await getProductSocialActivity(activeShop.shopId, id);
 
-  return (
-    <ProductForm
-      shopId={MOCK_SHOP_ID}
-      categories={categories}
-      initialData={productRes.data}
-      mode="edit"
-    />
-  );
+    return (
+        <div className="flex flex-col gap-6">
+            <ProductForm
+                shopId={activeShop.shopId}
+                categories={categories}
+                initialData={productRes.data}
+                mode="edit"
+            />
+            <ProductSocialTimeline
+                items={socialLogsRes.success ? socialLogsRes.data : []}
+            />
+        </div>
+    );
 }

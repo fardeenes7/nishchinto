@@ -18,169 +18,247 @@
 
 import { cookies } from "next/headers";
 import {
-  apiFetch,
-  getCategories as _getCategories,
-  createCategory as _createCategory,
-  updateCategory as _updateCategory,
-  deleteCategory as _deleteCategory,
-  getProducts as _getProducts,
-  getProduct as _getProduct,
-  createProduct as _createProduct,
-  updateProduct as _updateProduct,
-  publishProduct as _publishProduct,
-  archiveProduct as _archiveProduct,
-  deleteProduct as _deleteProduct,
-  getVariants as _getVariants,
-  createVariant as _createVariant,
-  adjustVariantStock as _adjustVariantStock,
-  getTrackingConfig as _getTrackingConfig,
-  updateTrackingConfig as _updateTrackingConfig,
-  getPresignedUploadUrl as _getPresignedUploadUrl,
-  confirmUpload as _confirmUpload,
-  deleteMedia as _deleteMedia,
-  getShop as _getShop,
-  updateShop as _updateShop,
-  type FetcherInit,
-  type ApiResponse,
+    apiFetch,
+    getCategories as _getCategories,
+    createCategory as _createCategory,
+    updateCategory as _updateCategory,
+    deleteCategory as _deleteCategory,
+    getProducts as _getProducts,
+    getProduct as _getProduct,
+    createProduct as _createProduct,
+    updateProduct as _updateProduct,
+    publishProduct as _publishProduct,
+    archiveProduct as _archiveProduct,
+    deleteProduct as _deleteProduct,
+    getVariants as _getVariants,
+    createVariant as _createVariant,
+    adjustVariantStock as _adjustVariantStock,
+    getTrackingConfig as _getTrackingConfig,
+    updateTrackingConfig as _updateTrackingConfig,
+    getPresignedUploadUrl as _getPresignedUploadUrl,
+    confirmUpload as _confirmUpload,
+    deleteMedia as _deleteMedia,
+    getShop as _getShop,
+    getActiveShopContext as _getActiveShopContext,
+    updateShop as _updateShop,
+    getSocialConnections as _getSocialConnections,
+    createSocialConnection as _createSocialConnection,
+    disconnectSocialConnection as _disconnectSocialConnection,
+    publishProductToSocial as _publishProductToSocial,
+    publishProductsToSocial as _publishProductsToSocial,
+    getProductSocialActivity as _getProductSocialActivity,
+    startSocialOAuth as _startSocialOAuth,
+    handleSocialOAuthCallback as _handleSocialOAuthCallback,
+    type FetcherInit,
+    type ApiResponse,
 } from "@repo/api";
 
 /** Reads the access_token cookie. Returns undefined if not authenticated. */
 async function getToken(): Promise<string | undefined> {
-  return (await cookies()).get("access_token")?.value;
+    const cookieStore = await cookies();
+    return (
+        cookieStore.get("access_token")?.value ??
+        cookieStore.get("nishchinto_jwt")?.value
+    );
 }
 
 // ── Generic server fetch (for one-off calls not covered below) ──────────────
 
 export async function serverFetch<T = unknown>(
-  endpoint: string,
-  init: FetcherInit = {},
+    endpoint: string,
+    init: FetcherInit = {},
 ): Promise<ApiResponse<T>> {
-  const token = await getToken();
-  return apiFetch<T>(endpoint, init, token);
+    const token = await getToken();
+    return apiFetch<T>(endpoint, init, token);
 }
 
 // ── Catalog wrappers ─────────────────────────────────────────────────────────
 
 export async function getCategories(shopId: string) {
-  return _getCategories(shopId, await getToken());
+    return _getCategories(shopId, await getToken());
 }
 
 export async function createCategory(
-  shopId: string,
-  data: Parameters<typeof _createCategory>[1],
+    shopId: string,
+    data: Parameters<typeof _createCategory>[1],
 ) {
-  return _createCategory(shopId, data, await getToken());
+    return _createCategory(shopId, data, await getToken());
 }
 
 export async function updateCategory(
-  shopId: string,
-  categoryId: string,
-  data: Parameters<typeof _updateCategory>[2],
+    shopId: string,
+    categoryId: string,
+    data: Parameters<typeof _updateCategory>[2],
 ) {
-  return _updateCategory(shopId, categoryId, data, await getToken());
+    return _updateCategory(shopId, categoryId, data, await getToken());
 }
 
 export async function deleteCategory(shopId: string, categoryId: string) {
-  return _deleteCategory(shopId, categoryId, await getToken());
+    return _deleteCategory(shopId, categoryId, await getToken());
 }
 
 export async function getProducts(
-  shopId: string,
-  params?: Parameters<typeof _getProducts>[1],
+    shopId: string,
+    params?: Parameters<typeof _getProducts>[1],
 ) {
-  return _getProducts(shopId, params, await getToken());
+    return _getProducts(shopId, params, await getToken());
 }
 
 export async function getProduct(shopId: string, productId: string) {
-  return _getProduct(shopId, productId, await getToken());
+    return _getProduct(shopId, productId, await getToken());
 }
 
 export async function createProduct(
-  shopId: string,
-  data: Record<string, unknown>,
+    shopId: string,
+    data: Record<string, unknown>,
 ) {
-  return _createProduct(shopId, data, await getToken());
+    return _createProduct(shopId, data, await getToken());
 }
 
 export async function updateProduct(
-  shopId: string,
-  productId: string,
-  data: Record<string, unknown>,
+    shopId: string,
+    productId: string,
+    data: Record<string, unknown>,
 ) {
-  return _updateProduct(shopId, productId, data, await getToken());
+    return _updateProduct(shopId, productId, data, await getToken());
 }
 
 export async function publishProduct(shopId: string, productId: string) {
-  return _publishProduct(shopId, productId, await getToken());
+    return _publishProduct(shopId, productId, await getToken());
 }
 
 export async function archiveProduct(shopId: string, productId: string) {
-  return _archiveProduct(shopId, productId, await getToken());
+    return _archiveProduct(shopId, productId, await getToken());
 }
 
 export async function deleteProduct(shopId: string, productId: string) {
-  return _deleteProduct(shopId, productId, await getToken());
+    return _deleteProduct(shopId, productId, await getToken());
 }
 
 export async function getVariants(shopId: string, productId: string) {
-  return _getVariants(shopId, productId, await getToken());
+    return _getVariants(shopId, productId, await getToken());
 }
 
 export async function createVariant(
-  shopId: string,
-  productId: string,
-  data: Record<string, unknown>,
+    shopId: string,
+    productId: string,
+    data: Record<string, unknown>,
 ) {
-  return _createVariant(shopId, productId, data, await getToken());
+    return _createVariant(shopId, productId, data, await getToken());
 }
 
 export async function adjustVariantStock(
-  shopId: string,
-  productId: string,
-  variantId: string,
-  data: Parameters<typeof _adjustVariantStock>[3],
+    shopId: string,
+    productId: string,
+    variantId: string,
+    data: Parameters<typeof _adjustVariantStock>[3],
 ) {
-  return _adjustVariantStock(shopId, productId, variantId, data, await getToken());
+    return _adjustVariantStock(
+        shopId,
+        productId,
+        variantId,
+        data,
+        await getToken(),
+    );
 }
 
 export async function getTrackingConfig(shopId: string) {
-  return _getTrackingConfig(shopId, await getToken());
+    return _getTrackingConfig(shopId, await getToken());
 }
 
 export async function updateTrackingConfig(
-  shopId: string,
-  data: Parameters<typeof _updateTrackingConfig>[1],
+    shopId: string,
+    data: Parameters<typeof _updateTrackingConfig>[1],
 ) {
-  return _updateTrackingConfig(shopId, data, await getToken());
+    return _updateTrackingConfig(shopId, data, await getToken());
 }
 
 export async function getPresignedUploadUrl(
-  filename: string,
-  contentType: string,
-  shopId: string,
+    filename: string,
+    contentType: string,
+    shopId: string,
 ) {
-  return _getPresignedUploadUrl(filename, contentType, shopId, await getToken());
+    return _getPresignedUploadUrl(
+        filename,
+        contentType,
+        shopId,
+        await getToken(),
+    );
 }
 
 export async function confirmUpload(
-  s3Key: string,
-  originalFilename: string,
-  shopId: string,
+    s3Key: string,
+    originalFilename: string,
+    shopId: string,
 ) {
-  return _confirmUpload(s3Key, originalFilename, shopId, await getToken());
+    return _confirmUpload(s3Key, originalFilename, shopId, await getToken());
 }
 
 export async function deleteMedia(mediaId: string, shopId: string) {
-  return _deleteMedia(mediaId, shopId, await getToken());
+    return _deleteMedia(mediaId, shopId, await getToken());
 }
 
 export async function getShop(shopId: string) {
-  return _getShop(shopId, await getToken());
+    return _getShop(shopId, await getToken());
+}
+
+export async function getActiveShopContext(shopId?: string) {
+    return _getActiveShopContext(shopId, await getToken());
 }
 
 export async function updateShop(
-  shopId: string,
-  data: Parameters<typeof _updateShop>[1],
+    shopId: string,
+    data: Parameters<typeof _updateShop>[1],
 ) {
-  return _updateShop(shopId, data, await getToken());
+    return _updateShop(shopId, data, await getToken());
+}
+
+export async function getSocialConnections(shopId: string) {
+    return _getSocialConnections(shopId, await getToken());
+}
+
+export async function createSocialConnection(
+    shopId: string,
+    data: Parameters<typeof _createSocialConnection>[1],
+) {
+    return _createSocialConnection(shopId, data, await getToken());
+}
+
+export async function disconnectSocialConnection(
+    shopId: string,
+    connectionId: string,
+) {
+    return _disconnectSocialConnection(shopId, connectionId, await getToken());
+}
+
+export async function publishProductToSocial(
+    shopId: string,
+    data: Parameters<typeof _publishProductToSocial>[1],
+) {
+    return _publishProductToSocial(shopId, data, await getToken());
+}
+
+export async function publishProductsToSocial(
+    shopId: string,
+    data: Parameters<typeof _publishProductsToSocial>[1],
+) {
+    return _publishProductsToSocial(shopId, data, await getToken());
+}
+
+export async function getProductSocialActivity(
+    shopId: string,
+    productId: string,
+) {
+    return _getProductSocialActivity(shopId, productId, await getToken());
+}
+
+export async function startSocialOAuth(shopId: string) {
+    return _startSocialOAuth(shopId, await getToken());
+}
+
+export async function handleSocialOAuthCallback(
+    shopId: string,
+    data: Parameters<typeof _handleSocialOAuthCallback>[1],
+) {
+    return _handleSocialOAuthCallback(shopId, data, await getToken());
 }

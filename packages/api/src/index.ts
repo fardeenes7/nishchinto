@@ -8,8 +8,16 @@
  *  - Generated OpenAPI schema types from Django (`schema.d.ts`)
  */
 
-export { publicFetch, type ApiResponse, type ApiSuccess, type ApiError, type FetcherInit, type FetcherBody } from './fetcher';
-export { apiFetch } from './auth-fetcher';
-export type * from './schema';
-export * from './catalog';
-export * from './shops';
+export {
+    publicFetch,
+    type ApiResponse,
+    type ApiSuccess,
+    type ApiError,
+    type FetcherInit,
+    type FetcherBody,
+} from "./fetcher";
+export { apiFetch } from "./auth-fetcher";
+export type * from "./schema";
+export * from "./catalog";
+export * from "./shops";
+export * from "./social";
