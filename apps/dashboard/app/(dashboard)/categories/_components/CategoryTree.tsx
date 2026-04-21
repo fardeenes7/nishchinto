@@ -23,8 +23,9 @@ import {
   AlertDialogTitle,
 } from "@repo/ui/components/ui/alert-dialog";
 import { CategoryForm } from "./CategoryForm";
-import { deleteCategory } from "@repo/api";
+import { deleteCategory } from "@/lib/api";
 import type { Category } from "@repo/api";
+
 
 interface CategoryTreeProps {
   categories: Category[];

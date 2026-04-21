@@ -25,7 +25,9 @@ import {
   trackingConfigSchema,
   type TrackingConfigFormValues,
 } from "../../products/_schemas/productSchema";
-import { updateTrackingConfig, type ShopTrackingConfig } from "@repo/api";
+import { updateTrackingConfig } from "@/lib/api";
+import type { ShopTrackingConfig } from "@repo/api";
+
 
 interface TrackingConfigFormProps {
   shopId: string;

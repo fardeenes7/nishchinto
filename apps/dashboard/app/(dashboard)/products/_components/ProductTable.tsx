@@ -47,7 +47,8 @@ import {
     publishProduct,
     archiveProduct,
     publishProductToSocial,
-} from "@repo/api";
+} from "@/lib/api";
+
 
 interface ProductTableProps {
     products: ProductListItem[];

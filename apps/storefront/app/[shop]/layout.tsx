@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getStorefrontTrackingConfig } from "@repo/api";
+import { getStorefrontTrackingConfig } from "@/lib/api";
+
 import { TrackingProvider } from "../components/TrackingProvider";
 
 interface ShopLayoutProps {

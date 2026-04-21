@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import {
-  confirmStorefrontPaymentInvoiceCod,
+  confirmStorefrontCodAction,
   getStorefrontPaymentInvoice,
   getStorefrontShop,
-} from "@repo/api";
+} from "@/lib/api";
+import type { StorefrontPaymentInvoiceItem } from "@repo/api";
 
-interface PayTokenPageProps {
+
+
+interface PayTokenPageProps { 
   params: Promise<{ shop: string; token: string }>;
 }
 
@@ -62,19 +65,8 @@ export default async function PayTokenPage({ params }: PayTokenPageProps) {
   const currency = shopRes.success ? shopRes.data.base_currency : order.currency;
   const shopName = shopRes.success ? shopRes.data.name : shop;
 
-  async function confirmCodAction() {
-    "use server";
+  const confirmCodAction = confirmStorefrontCodAction.bind(null, shop, token);
 
-    const confirmRes = await confirmStorefrontPaymentInvoiceCod(shop, token);
-    if (!confirmRes.success) {
-      if (confirmRes.status === 410) {
-        redirect(`/${shop}/pay/${token}`);
-      }
-      redirect(`/${shop}/pay/${token}`);
-    }
-
-    redirect(`/${shop}/pay/${token}/confirmed?orderId=${confirmRes.data.order_id}`);
-  }
 
   return (
     <main className="min-h-screen bg-background py-12 px-4">
@@ -85,7 +77,7 @@ export default async function PayTokenPage({ params }: PayTokenPageProps) {
         <div className="mt-8 space-y-4">
           <h2 className="text-lg font-semibold">Order summary</h2>
           <div className="rounded-lg border divide-y">
-            {order.items.map((item) => (
+            {order.items.map((item: StorefrontPaymentInvoiceItem) => (
               <div key={item.id} className="p-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="font-medium">{item.product_name}</p>

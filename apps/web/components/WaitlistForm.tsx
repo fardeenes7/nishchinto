@@ -19,7 +19,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@repo/ui/components/ui/select";
-import { joinWaitlistAction, type WaitlistActionState } from "@/app/actions";
+import { joinWaitlistAction, type WaitlistActionState } from "@/lib/api";
+
 
 const formSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -46,7 +47,7 @@ export function WaitlistForm() {
     );
 
     const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(formSchema as any),
         defaultValues: {
             email: "",
             phone: "",

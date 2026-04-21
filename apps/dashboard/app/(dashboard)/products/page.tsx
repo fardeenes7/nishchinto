@@ -51,7 +51,7 @@ async function ProductsContent({
     });
     const socialConnectionsRes = await getSocialConnections(shopId);
     const defaultSocialConnectionId = socialConnectionsRes.success
-        ? socialConnectionsRes.data.find(
+        ? (socialConnectionsRes.data as any[]).find(
               (connection) => connection.status === "ACTIVE",
           )?.id
         : undefined;

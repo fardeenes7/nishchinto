@@ -28,9 +28,10 @@ import { cn } from "@repo/ui/lib/utils";
 import {
   getPresignedUploadUrl,
   confirmUpload,
-  uploadFileToS3,
-  type MediaRecord,
-} from "@repo/api";
+} from "@/lib/api";
+import { uploadFileToS3 } from "@/lib/upload";
+import type { MediaRecord } from "@repo/api";
+
 
 interface UploadedImage {
   id: string;

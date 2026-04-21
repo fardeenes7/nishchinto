@@ -7,25 +7,13 @@
  */
 
 import { Suspense } from 'react';
-import { getWaitlistEntries } from '@/lib/api';
+import { getWaitlistEntries, type WaitlistEntry } from '@/lib/api';
 import { ApproveButton } from './_components/ApproveButton';
 
 export const metadata = {
     title: 'Waitlist Management — Nishchinto Admin',
 };
 
-interface WaitlistEntry {
-    id: number;
-    email: string;
-    phone_number: string;
-    status: string;
-    survey_data: {
-        business_name?: string;
-        estimated_monthly_orders?: string;
-        current_platform?: string;
-    };
-    created_at: string;
-}
 
 
 function StatusBadge({ status }: { status: string }) {

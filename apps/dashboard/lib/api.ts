@@ -36,6 +36,12 @@ export async function authFetcher<T = any>(
     return fetcher<T>(url, method, body, mergedHeaders, queryParams);
 }
 
+// ─── Shop & Context API ──────────────────────────────────────────────────────
+
+export async function getActiveShopContext() {
+    return authFetcher("/api/v1/shops/context/");
+}
+
 // ─── Category API ────────────────────────────────────────────────────────────
 
 export async function getCategories(shopId: string) {
@@ -130,6 +136,25 @@ export async function createVariant(shopId: string, productId: string, data: any
     return res;
 }
 
+export async function publishProduct(shopId: string, productId: string) {
+    const res = await authFetcher(`/api/v1/catalog/products/${productId}/publish/`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/products');
+    return res;
+}
+
+export async function archiveProduct(shopId: string, productId: string) {
+    const res = await authFetcher(`/api/v1/catalog/products/${productId}/archive/`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/products');
+    return res;
+}
+
+
 // ─── Media API ───────────────────────────────────────────────────────────────
 
 export async function getPresignedUploadUrl(filename: string, contentType: string, shopId: string) {
@@ -160,6 +185,62 @@ export async function getProductSocialActivity(shopId: string, productId: string
         headers: { "X-Tenant-ID": shopId },
     });
 }
+
+export async function createSocialConnection(shopId: string, data: any) {
+    return authFetcher("/api/v1/marketing/social/connections/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function disconnectSocialConnection(shopId: string, connectionId: string) {
+    return authFetcher(`/api/v1/marketing/social/connections/${connectionId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function startSocialOAuth(shopId: string) {
+    return authFetcher("/api/v1/marketing/social/oauth/start/", {
+        method: "POST",
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function handleSocialOAuthCallback(shopId: string, data: any) {
+    return authFetcher("/api/v1/marketing/social/oauth/callback/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function publishProductToSocial(shopId: string, data: any) {
+    return authFetcher("/api/v1/marketing/social/publish/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+
+// ─── Shop & Settings API ─────────────────────────────────────────────────────
+
+export async function updateTrackingConfig(shopId: string, data: any) {
+    const res = await authFetcher(`/api/v1/shops/${shopId}/tracking/`, {
+        method: "PATCH",
+        body: data,
+    });
+    if (res.success) revalidatePath('/settings/tracking');
+    return res;
+}
+
+export async function getTrackingConfig(shopId: string) {
+    return authFetcher(`/api/v1/shops/${shopId}/tracking/`);
+}
+
+
 
 // ─── Shop Actions ────────────────────────────────────────────────────────────
 

@@ -77,7 +77,7 @@ export default async function LandingPage({
                             { icon: <ShoppingBag className="w-8 h-8" />, ...dict.features.items[0] },
                             { icon: <Share2 className="w-8 h-8" />, ...dict.features.items[1] },
                             { icon: <Sparkles className="w-8 h-8" />, ...dict.features.items[2] }
-                        ].map((feature, i) => (
+                        ].map((feature: any, i) => (
                             <div key={i} className="p-8 rounded-2xl bg-background border hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
                                 <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
                                     {feature.icon}

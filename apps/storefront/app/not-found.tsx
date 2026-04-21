@@ -1,9 +1,10 @@
+"use client";
+
 import Link from "next/link";
+
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Page Not Found — Nishchinto Storefront",
-};
+
 
 /**
  * Storefront 404 page (item 1.3 — post_v03_debrief.md).

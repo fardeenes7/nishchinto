@@ -8,15 +8,17 @@
  */
 
 import { useActionState } from "react";
-import { approveWaitlistEntryAction, type ApproveActionState } from "../actions";
+import { approveWaitlistAction, type ApproveActionState } from "@/lib/api";
+
 
 const initialState: ApproveActionState = { status: "idle" };
 
 export function ApproveButton({ entryId }: { entryId: number }) {
     const [state, formAction, isPending] = useActionState(
-        approveWaitlistEntryAction,
+        approveWaitlistAction,
         initialState,
     );
+
 
     if (state.status === "success") {
         return (
