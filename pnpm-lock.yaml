@@ -175,6 +175,9 @@ importers:
       '@next/third-parties':
         specifier: ^16.2.4
         version: 16.2.4(next@16.2.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
+      '@repo/api':
+        specifier: workspace:^
+        version: link:../../packages/api
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui

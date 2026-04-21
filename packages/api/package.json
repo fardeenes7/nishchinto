@@ -5,8 +5,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./fetcher": "./src/fetcher.ts",
-    "./auth-fetcher": "./src/auth-fetcher.ts"
+    "./fetcher": "./src/fetcher.ts"
   },
   "scripts": {
     "generate": "openapi-typescript ./schema.yml -o ./src/schema.d.ts",

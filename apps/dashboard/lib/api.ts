@@ -1,264 +1,180 @@
 /**
- * Dashboard API helpers — App Router Server-side only.
- *
- * This file is the ONLY place in the dashboard app that imports `next/headers`.
- *
- * ── Usage in Server Components ───────────────────────────────────────────────
- *   import { getProducts, getCategories, ... } from '@/lib/api';
- *
- * These are thin wrappers that read the JWT from the HTTP-only cookie and
- * forward it to the corresponding @repo/api function. Drop-in replacements —
- * same signatures as @repo/api, minus the trailing `token` parameter.
- *
- * ── Usage in Client Components (mutations) ───────────────────────────────────
- * Client components call Server Actions. The Server Action runs on the server,
- * reads cookies, and calls these helpers. Never import next/headers in a
- * Client Component.
+ * Dashboard API helpers & Server Actions.
+ * 
+ * All functions are 'use server' and can be called from both 
+ * Server Components and Client Components (as Server Actions).
  */
+'use server';
 
 import { cookies } from "next/headers";
-import {
-    apiFetch,
-    getCategories as _getCategories,
-    createCategory as _createCategory,
-    updateCategory as _updateCategory,
-    deleteCategory as _deleteCategory,
-    getProducts as _getProducts,
-    getProduct as _getProduct,
-    createProduct as _createProduct,
-    updateProduct as _updateProduct,
-    publishProduct as _publishProduct,
-    archiveProduct as _archiveProduct,
-    deleteProduct as _deleteProduct,
-    getVariants as _getVariants,
-    createVariant as _createVariant,
-    adjustVariantStock as _adjustVariantStock,
-    getTrackingConfig as _getTrackingConfig,
-    updateTrackingConfig as _updateTrackingConfig,
-    getPresignedUploadUrl as _getPresignedUploadUrl,
-    confirmUpload as _confirmUpload,
-    deleteMedia as _deleteMedia,
-    getShop as _getShop,
-    getActiveShopContext as _getActiveShopContext,
-    updateShop as _updateShop,
-    getSocialConnections as _getSocialConnections,
-    createSocialConnection as _createSocialConnection,
-    disconnectSocialConnection as _disconnectSocialConnection,
-    publishProductToSocial as _publishProductToSocial,
-    publishProductsToSocial as _publishProductsToSocial,
-    getProductSocialActivity as _getProductSocialActivity,
-    startSocialOAuth as _startSocialOAuth,
-    handleSocialOAuthCallback as _handleSocialOAuthCallback,
-    type FetcherInit,
-    type ApiResponse,
-} from "@repo/api";
+import { revalidatePath } from "next/cache";
+import { fetcher, type ApiResponse } from "@repo/api";
 
-/** Reads the access_token cookie. Returns undefined if not authenticated. */
-async function getToken(): Promise<string | undefined> {
-    const cookieStore = await cookies();
-    return (
-        cookieStore.get("access_token")?.value ??
-        cookieStore.get("nishchinto_jwt")?.value
-    );
-}
-
-// ── Generic server fetch (for one-off calls not covered below) ──────────────
-
-export async function serverFetch<T = unknown>(
-    endpoint: string,
-    init: FetcherInit = {},
+/**
+ * The app-specific authFetcher wrapper.
+ * Retrieves the JWT from cookies and merges it into the headers.
+ */
+export async function authFetcher<T = any>(
+    url: string,
+    options: {
+        method?: string;
+        body?: any;
+        headers?: Record<string, string>;
+        queryParams?: any;
+    } = {}
 ): Promise<ApiResponse<T>> {
-    const token = await getToken();
-    return apiFetch<T>(endpoint, init, token);
+    const { method = "GET", body, headers = {}, queryParams } = options;
+    
+    const cookieStore = await cookies();
+    const token = cookieStore.get("access_token")?.value ?? cookieStore.get("nishchinto_jwt")?.value;
+
+    const mergedHeaders = { ...headers };
+    if (token) {
+        mergedHeaders["Authorization"] = `Bearer ${token}`;
+    }
+
+    return fetcher<T>(url, method, body, mergedHeaders, queryParams);
 }
 
-// ── Catalog wrappers ─────────────────────────────────────────────────────────
+// ─── Category API ────────────────────────────────────────────────────────────
 
 export async function getCategories(shopId: string) {
-    return _getCategories(shopId, await getToken());
+    return authFetcher("/api/v1/catalog/categories/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
 }
 
-export async function createCategory(
-    shopId: string,
-    data: Parameters<typeof _createCategory>[1],
-) {
-    return _createCategory(shopId, data, await getToken());
+export async function createCategory(shopId: string, data: any) {
+    const res = await authFetcher("/api/v1/catalog/categories/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/categories');
+    return res;
 }
 
-export async function updateCategory(
-    shopId: string,
-    categoryId: string,
-    data: Parameters<typeof _updateCategory>[2],
-) {
-    return _updateCategory(shopId, categoryId, data, await getToken());
+export async function updateCategory(shopId: string, categoryId: string, data: any) {
+    const res = await authFetcher(`/api/v1/catalog/categories/${categoryId}/`, {
+        method: "PATCH",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/categories');
+    return res;
 }
 
 export async function deleteCategory(shopId: string, categoryId: string) {
-    return _deleteCategory(shopId, categoryId, await getToken());
+    const res = await authFetcher(`/api/v1/catalog/categories/${categoryId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/categories');
+    return res;
 }
 
-export async function getProducts(
-    shopId: string,
-    params?: Parameters<typeof _getProducts>[1],
-) {
-    return _getProducts(shopId, params, await getToken());
+// ─── Product API ─────────────────────────────────────────────────────────────
+
+export async function getProducts(shopId: string, params?: any) {
+    return authFetcher("/api/v1/catalog/products/", {
+        headers: { "X-Tenant-ID": shopId },
+        queryParams: params,
+    });
 }
 
 export async function getProduct(shopId: string, productId: string) {
-    return _getProduct(shopId, productId, await getToken());
+    return authFetcher(`/api/v1/catalog/products/${productId}/`, {
+        headers: { "X-Tenant-ID": shopId },
+    });
 }
 
-export async function createProduct(
-    shopId: string,
-    data: Record<string, unknown>,
-) {
-    return _createProduct(shopId, data, await getToken());
+export async function createProduct(shopId: string, data: any) {
+    const res = await authFetcher("/api/v1/catalog/products/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/products');
+    return res;
 }
 
-export async function updateProduct(
-    shopId: string,
-    productId: string,
-    data: Record<string, unknown>,
-) {
-    return _updateProduct(shopId, productId, data, await getToken());
-}
-
-export async function publishProduct(shopId: string, productId: string) {
-    return _publishProduct(shopId, productId, await getToken());
-}
-
-export async function archiveProduct(shopId: string, productId: string) {
-    return _archiveProduct(shopId, productId, await getToken());
+export async function updateProduct(shopId: string, productId: string, data: any) {
+    const res = await authFetcher(`/api/v1/catalog/products/${productId}/`, {
+        method: "PATCH",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) {
+        revalidatePath('/products');
+        revalidatePath(`/products/${productId}`);
+    }
+    return res;
 }
 
 export async function deleteProduct(shopId: string, productId: string) {
-    return _deleteProduct(shopId, productId, await getToken());
+    const res = await authFetcher(`/api/v1/catalog/products/${productId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/products');
+    return res;
 }
 
-export async function getVariants(shopId: string, productId: string) {
-    return _getVariants(shopId, productId, await getToken());
+export async function createVariant(shopId: string, productId: string, data: any) {
+    const res = await authFetcher(`/api/v1/catalog/products/${productId}/variants/`, {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath(`/products/${productId}`);
+    return res;
 }
 
-export async function createVariant(
-    shopId: string,
-    productId: string,
-    data: Record<string, unknown>,
-) {
-    return _createVariant(shopId, productId, data, await getToken());
+// ─── Media API ───────────────────────────────────────────────────────────────
+
+export async function getPresignedUploadUrl(filename: string, contentType: string, shopId: string) {
+    return authFetcher("/api/v1/media/upload-url/", {
+        headers: { "X-Tenant-ID": shopId },
+        queryParams: { filename, content_type: contentType },
+    });
 }
 
-export async function adjustVariantStock(
-    shopId: string,
-    productId: string,
-    variantId: string,
-    data: Parameters<typeof _adjustVariantStock>[3],
-) {
-    return _adjustVariantStock(
-        shopId,
-        productId,
-        variantId,
-        data,
-        await getToken(),
-    );
+export async function confirmUpload(s3Key: string, originalFilename: string, shopId: string) {
+    return authFetcher("/api/v1/media/confirm/", {
+        method: "POST",
+        body: { s3_key: s3Key, original_filename: originalFilename },
+        headers: { "X-Tenant-ID": shopId },
+    });
 }
 
-export async function getTrackingConfig(shopId: string) {
-    return _getTrackingConfig(shopId, await getToken());
-}
-
-export async function updateTrackingConfig(
-    shopId: string,
-    data: Parameters<typeof _updateTrackingConfig>[1],
-) {
-    return _updateTrackingConfig(shopId, data, await getToken());
-}
-
-export async function getPresignedUploadUrl(
-    filename: string,
-    contentType: string,
-    shopId: string,
-) {
-    return _getPresignedUploadUrl(
-        filename,
-        contentType,
-        shopId,
-        await getToken(),
-    );
-}
-
-export async function confirmUpload(
-    s3Key: string,
-    originalFilename: string,
-    shopId: string,
-) {
-    return _confirmUpload(s3Key, originalFilename, shopId, await getToken());
-}
-
-export async function deleteMedia(mediaId: string, shopId: string) {
-    return _deleteMedia(mediaId, shopId, await getToken());
-}
-
-export async function getShop(shopId: string) {
-    return _getShop(shopId, await getToken());
-}
-
-export async function getActiveShopContext(shopId?: string) {
-    return _getActiveShopContext(shopId, await getToken());
-}
-
-export async function updateShop(
-    shopId: string,
-    data: Parameters<typeof _updateShop>[1],
-) {
-    return _updateShop(shopId, data, await getToken());
-}
+// ─── Social API ──────────────────────────────────────────────────────────────
 
 export async function getSocialConnections(shopId: string) {
-    return _getSocialConnections(shopId, await getToken());
+    return authFetcher("/api/v1/marketing/social/connections/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
 }
 
-export async function createSocialConnection(
-    shopId: string,
-    data: Parameters<typeof _createSocialConnection>[1],
+export async function getProductSocialActivity(shopId: string, productId: string) {
+    return authFetcher(`/api/v1/marketing/social/products/${productId}/activity/`, {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+// ─── Shop Actions ────────────────────────────────────────────────────────────
+
+export async function claimShopAction(
+    _prevState: any,
+    formData: FormData,
 ) {
-    return _createSocialConnection(shopId, data, await getToken());
-}
+    const token     = formData.get('token') as string;
+    const subdomain = formData.get('subdomain') as string;
+    const password  = formData.get('password') as string;
 
-export async function disconnectSocialConnection(
-    shopId: string,
-    connectionId: string,
-) {
-    return _disconnectSocialConnection(shopId, connectionId, await getToken());
-}
+    if (!token || !subdomain || !password) {
+        return { success: false, error: 'All fields are required.' };
+    }
 
-export async function publishProductToSocial(
-    shopId: string,
-    data: Parameters<typeof _publishProductToSocial>[1],
-) {
-    return _publishProductToSocial(shopId, data, await getToken());
-}
-
-export async function publishProductsToSocial(
-    shopId: string,
-    data: Parameters<typeof _publishProductsToSocial>[1],
-) {
-    return _publishProductsToSocial(shopId, data, await getToken());
-}
-
-export async function getProductSocialActivity(
-    shopId: string,
-    productId: string,
-) {
-    return _getProductSocialActivity(shopId, productId, await getToken());
-}
-
-export async function startSocialOAuth(shopId: string) {
-    return _startSocialOAuth(shopId, await getToken());
-}
-
-export async function handleSocialOAuthCallback(
-    shopId: string,
-    data: Parameters<typeof _handleSocialOAuthCallback>[1],
-) {
-    return _handleSocialOAuthCallback(shopId, data, await getToken());
+    const res = await fetcher('/api/v1/shops/claim/', 'POST', { token, subdomain, password });
+    return res;
 }

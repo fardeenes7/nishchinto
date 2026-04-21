@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStorefrontProducts, getCategories, getStorefrontShop } from "@repo/api";
-import { publicFetch } from "@repo/api";
+import { getStorefrontProducts, getStorefrontShop } from "@/lib/api";
 
 interface ShopProductsPageProps {
   params: Promise<{ shop: string }>;

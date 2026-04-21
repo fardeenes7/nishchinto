@@ -37,8 +37,8 @@ import { productSchema, type ProductFormValues } from "../_schemas/productSchema
 import { RichTextEditor } from "./RichTextEditor";
 import { ImageUploader } from "./ImageUploader";
 import { VariantMatrix } from "./VariantMatrix";
+import { createProduct, updateProduct, createVariant } from "@/lib/api";
 import type { Category, ProductDetail } from "@repo/api";
-import { createProduct, updateProduct, createVariant } from "@repo/api";
 
 interface ProductFormProps {
   shopId: string;
@@ -100,7 +100,7 @@ export function ProductForm({
 
   const watchedName = watch("name");
 
-  const onSubmit = async (data: unknown) => {
+    const onSubmit = async (data: unknown) => {
     const formData = data as ProductFormValues;
     setIsSubmitting(true);
     try {

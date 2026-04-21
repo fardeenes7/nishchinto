@@ -12,7 +12,8 @@ import { useActionState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
-import { claimShopAction, type ClaimActionState } from "../../actions";
+import { claimShopAction } from "@/lib/api";
+import { type ApiResponse } from "@repo/api";
 import Link from "next/link";
 
 const claimSchema = z.object({
@@ -30,7 +31,7 @@ const claimSchema = z.object({
 
 type ClaimFormValues = z.infer<typeof claimSchema>;
 
-const initialState: ClaimActionState = { status: "idle" };
+const initialState: ApiResponse = { success: false, status: 0, data: null, error: "" };
 
 export function ClaimForm({ token }: { token: string }) {
     const [state, formAction, isPending] = useActionState(
@@ -44,7 +45,7 @@ export function ClaimForm({ token }: { token: string }) {
         defaultValues: { subdomain: "", password: "", passwordConfirm: "" },
     });
 
-    if (state.status === "success") {
+    if (state.success) {
         return (
             <div className="text-center space-y-4">
                 <div className="text-5xl">🎉</div>
@@ -85,9 +86,9 @@ export function ClaimForm({ token }: { token: string }) {
             {/* Hidden — token is passed from server, not typed by user */}
             <input type="hidden" name="token" value={token} />
 
-            {state.status === "error" && (
+            {!state.success && state.error && (
                 <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-                    {state.message}
+                    {state.error}
                 </div>
             )}
 

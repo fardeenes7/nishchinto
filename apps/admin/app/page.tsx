@@ -7,7 +7,7 @@
  */
 
 import { Suspense } from 'react';
-import { apiFetch } from '@repo/api/auth-fetcher';
+import { getWaitlistEntries } from '@/lib/api';
 import { ApproveButton } from './_components/ApproveButton';
 
 export const metadata = {
@@ -27,23 +27,6 @@ interface WaitlistEntry {
     created_at: string;
 }
 
-/**
- * Server-side data fetch using the authenticated fetcher.
- * JWT is read from the `access_token` cookie by apiFetch automatically.
- * cache: 'no-store' ensures each admin request always gets fresh data.
- */
-async function getWaitlistEntries(): Promise<WaitlistEntry[]> {
-    const res = await apiFetch<WaitlistEntry[]>('/api/v1/marketing/waitlist/admin/', {
-        cache: 'no-store',
-    });
-
-    if (!res.success) {
-        // Propagate to the nearest error.tsx boundary
-        throw new Error(res.error);
-    }
-
-    return res.data;
-}
 
 function StatusBadge({ status }: { status: string }) {
     const colors: Record<string, string> = {
@@ -60,7 +43,9 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 async function WaitlistTable() {
-    const entries = await getWaitlistEntries();
+    const res = await getWaitlistEntries();
+    if (!res.success) throw new Error(res.error);
+    const entries = res.data;
 
     if (entries.length === 0) {
         return (

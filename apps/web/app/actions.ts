@@ -2,12 +2,9 @@
 
 /**
  * Server Actions for the marketing `web` app.
- *
- * Uses `publicFetch` — waitlist submission is unauthenticated and the
- * endpoint does not need to be cached (rate-limited by Redis on the backend).
  */
 
-import { publicFetch, type ApiResponse } from '@repo/api/fetcher';
+import { publicFetch } from '@/lib/api';
 
 export type WaitlistActionState = {
     status: 'idle' | 'success' | 'error';
@@ -27,7 +24,7 @@ export async function joinWaitlistAction(
         return { status: 'error', message: 'Email and phone are required.' };
     }
 
-    const res: ApiResponse = await publicFetch('/api/v1/marketing/waitlist/', {
+    const res = await publicFetch('/api/v1/marketing/waitlist/', {
         method: 'POST',
         body: {
             email,
@@ -37,11 +34,9 @@ export async function joinWaitlistAction(
                 estimated_monthly_orders: orders ?? '0-100',
             },
         },
-        cache: 'no-store',
     });
 
     if (!res.success) {
-        // res.error already extracted from Django DRF response by the fetcher
         return { status: 'error', message: res.error };
     }
 

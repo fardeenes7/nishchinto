@@ -30,7 +30,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@repo/ui/components/ui/select";
-import { createCategory, updateCategory, deleteCategory } from "@repo/api";
+import { createCategory, updateCategory } from "@/lib/api";
 import { z } from "zod";
 import type { Category } from "@repo/api";
 

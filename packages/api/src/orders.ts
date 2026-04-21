@@ -1,4 +1,6 @@
-import { publicFetch, type ApiResponse } from "./fetcher";
+/**
+ * @repo/api — Orders API client types
+ */
 
 export interface PaymentMethodOption {
   code: "COD" | "ONLINE";
@@ -39,27 +41,4 @@ export interface StorefrontPaymentInvoiceConfirmResult {
   order_id: string;
   order_status: string;
   invoice_token: string;
-}
-
-export async function getStorefrontPaymentInvoice(
-  shopSlug: string,
-  token: string,
-): Promise<ApiResponse<StorefrontPaymentInvoice>> {
-  return publicFetch<StorefrontPaymentInvoice>(
-    `/api/v1/storefront/${shopSlug}/pay/${token}/`,
-    { cache: "no-store" },
-  );
-}
-
-export async function confirmStorefrontPaymentInvoiceCod(
-  shopSlug: string,
-  token: string,
-): Promise<ApiResponse<StorefrontPaymentInvoiceConfirmResult>> {
-  return publicFetch<StorefrontPaymentInvoiceConfirmResult>(
-    `/api/v1/storefront/${shopSlug}/pay/${token}/cod-confirm/`,
-    {
-      method: "POST",
-      cache: "no-store",
-    },
-  );
 }

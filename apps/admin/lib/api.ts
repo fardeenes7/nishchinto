@@ -1,41 +1,45 @@
 /**
- * Admin API helpers — Pages Router compatible.
- *
- * No `next/headers` — reads cookies from the raw request object instead,
- * which is available in getServerSideProps, API Routes, and middleware.
- *
- * Usage in getServerSideProps:
- *   import { makeServerFetch } from '@/lib/api';
- *
- *   export async function getServerSideProps(ctx) {
- *     const apiFetch = makeServerFetch(ctx.req.cookies);
- *     const res = await apiFetch('/api/v1/marketing/waitlist/');
- *     ...
- *   }
- *
- * Usage in an API Route:
- *   import { makeServerFetch } from '@/lib/api';
- *
- *   export default async function handler(req, res) {
- *     const apiFetch = makeServerFetch(req.cookies);
- *     ...
- *   }
+ * Admin API helpers — App Router Server-side only.
  */
 
-import { apiFetch, type FetcherInit, type ApiResponse } from "@repo/api";
+import { cookies } from "next/headers";
+import { fetcher, type ApiResponse } from "@repo/api";
 
 /**
- * Returns a pre-authenticated fetch function bound to the token
- * found in the provided cookie map.
- *
- * @param cookieMap - `req.cookies` from getServerSideProps / API Route context
+ * App-specific authFetcher for the admin app.
  */
-export function makeServerFetch(cookieMap: Partial<Record<string, string>>) {
-  const token = cookieMap["access_token"];
-  return function serverFetch<T = unknown>(
-    endpoint: string,
-    init: FetcherInit = {},
-  ): Promise<ApiResponse<T>> {
-    return apiFetch<T>(endpoint, init, token);
-  };
+export async function authFetcher<T = any>(
+    url: string,
+    options: {
+        method?: string;
+        body?: any;
+        headers?: Record<string, string>;
+        queryParams?: any;
+    } = {}
+): Promise<ApiResponse<T>> {
+    const { method = "GET", body, headers = {}, queryParams } = options;
+    
+    const cookieStore = await cookies();
+    const token = cookieStore.get("access_token")?.value ?? cookieStore.get("nishchinto_jwt")?.value;
+
+    const mergedHeaders = { ...headers };
+    if (token) {
+        mergedHeaders["Authorization"] = `Bearer ${token}`;
+    }
+
+    return fetcher<T>(url, method, body, mergedHeaders, queryParams);
+}
+
+// ─── Marketing / Waitlist API ────────────────────────────────────────────────
+
+export async function getWaitlistEntries() {
+    return authFetcher<any[]>("/api/v1/marketing/waitlist/admin/", {
+        headers: { "Cache-Control": "no-store" }
+    });
+}
+
+export async function approveWaitlistEntry(entryId: number) {
+    return authFetcher<any>(`/api/v1/marketing/waitlist/admin/${entryId}/approve/`, {
+        method: "POST"
+    });
 }
