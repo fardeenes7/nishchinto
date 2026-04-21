@@ -19,5 +19,6 @@ export {
 export { apiFetch } from "./auth-fetcher";
 export type * from "./schema";
 export * from "./catalog";
+export * from "./orders";
 export * from "./shops";
 export * from "./social";
