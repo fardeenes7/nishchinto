@@ -64,6 +64,10 @@ export async function getStorefrontTrackingConfig(shopSlug: string) {
     return storefrontFetch<ShopTrackingConfig>(`/api/v1/storefront/${shopSlug}/tracking/`);
 }
 
+export async function getStorefrontTheme(shopSlug: string) {
+    return storefrontFetch<any>(`/api/v1/storefront/${shopSlug}/theme/`);
+}
+
 
 
 export async function getStorefrontPaymentInvoice(

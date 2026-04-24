@@ -60,14 +60,18 @@ export default async function StorefrontProductDetailPage({
   params,
 }: ProductDetailPageProps) {
   const { shop, slug } = await params;
-  const [res, shopRes] = await Promise.all([
+  const [res, shopRes, themeRes] = await Promise.all([
     getStorefrontProduct(shop, slug),
     getStorefrontShop(shop),
+    import("@/lib/api").then(m => m.getStorefrontTheme(shop))
   ]);
 
   if (!res.success) notFound();
   const product = res.data;
   const baseCurrency = shopRes.success ? shopRes.data.base_currency : "BDT";
+  const themeData = themeRes.success ? themeRes.data : null;
+  const pdpVariant = themeData?.active_components?.pdp || "standard";
+
   const thumbnail =
     product.product_media.find((m) => m.is_thumbnail)?.media.cdn_url ??
     product.product_media[0]?.media.cdn_url;
@@ -106,9 +110,10 @@ export default async function StorefrontProductDetailPage({
           <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className={`grid grid-cols-1 ${pdpVariant === "minimal" ? "max-w-3xl mx-auto" : "lg:grid-cols-2 gap-12"}`}>
           {/* ── Image Gallery ─────────────────────────────────────── */}
-          <div className="flex flex-col gap-3">
+          <div className={`flex flex-col gap-3 ${pdpVariant === "sticky" ? "lg:sticky lg:top-8 self-start" : ""}`}>
+
             {/* Main image */}
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
               {thumbnail ? (

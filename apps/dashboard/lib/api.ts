@@ -240,7 +240,18 @@ export async function getTrackingConfig(shopId: string) {
     return authFetcher(`/api/v1/shops/${shopId}/tracking/`);
 }
 
+export async function getStoreTheme() {
+    return authFetcher(`/api/v1/shops/theme/`);
+}
 
+export async function updateStoreTheme(data: any) {
+    const res = await authFetcher(`/api/v1/shops/theme/`, {
+        method: "PATCH",
+        body: data,
+    });
+    if (res.success) revalidatePath('/builder');
+    return res;
+}
 
 // ─── Shop Actions ────────────────────────────────────────────────────────────
 

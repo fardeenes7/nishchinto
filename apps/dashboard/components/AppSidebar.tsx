@@ -9,7 +9,8 @@ import {
     IconPlugConnected,
     IconMessage,
     IconMessageQuestion,
-    IconLayoutStore,
+    IconBuildingStore,
+    IconGlobe
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,7 +24,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
+    SidebarMenuItem
 } from "@repo/ui/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@repo/ui/components/ui/avatar";
 
@@ -31,51 +32,61 @@ const navItems = [
     {
         title: "Overview",
         href: "/",
-        icon: IconDashboard,
+        icon: IconDashboard
     },
     {
         title: "Inbox",
         href: "/inbox",
-        icon: IconMessage,
+        icon: IconMessage
     },
     {
         title: "Products",
         href: "/products",
-        icon: IconBox,
+        icon: IconBox
+    },
+    {
+        title: "Store Builder",
+        href: "/builder",
+        icon: IconBuildingStore
     },
     {
         title: "Categories",
         href: "/categories",
-        icon: IconCategory,
-    },
+        icon: IconCategory
+    }
 ];
 
 const settingsItems = [
     {
         title: "Social Connections",
         href: "/settings/social",
-        icon: IconPlugConnected,
+        icon: IconPlugConnected
     },
     {
         title: "Tracking & Pixels",
         href: "/settings/tracking",
-        icon: IconBrandFacebook,
+        icon: IconBrandFacebook
     },
     {
         title: "FAQ & Policies",
         href: "/settings/faq",
-        icon: IconMessageQuestion,
+        icon: IconMessageQuestion
     },
     {
         title: "Storefront",
         href: "/settings/storefront",
-        icon: IconLayoutStore,
+        icon: IconBuildingStore
+    },
+    {
+        title: "Custom Domain",
+        href: "/settings/domain",
+        icon: IconGlobe
     },
     {
         title: "Settings",
         href: "/settings",
-        icon: IconSettings,
-    },
+        icon: IconSettings
+    }
 ];
 
 export function AppSidebar() {
@@ -135,7 +146,7 @@ export function AppSidebar() {
                                     <SidebarMenuButton
                                         asChild
                                         isActive={pathname.startsWith(
-                                            item.href,
+                                            item.href
                                         )}
                                     >
                                         <Link href={item.href}>

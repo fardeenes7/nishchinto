@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getStorefrontTrackingConfig } from "@/lib/api";
+import { getStorefrontTrackingConfig, getStorefrontTheme } from "@/lib/api";
 
 import { TrackingProvider } from "../components/TrackingProvider";
+import { ThemeTokenProvider } from "../components/ThemeTokenProvider";
 
 interface ShopLayoutProps {
   children: React.ReactNode;
@@ -29,8 +30,12 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
     ? trackingRes.data
     : { id: "", fb_pixel_id: "", ga4_measurement_id: "", gtm_id: "", updated_at: "" };
 
+  const themeRes = await getStorefrontTheme(shop);
+  const themeData = themeRes.success ? themeRes.data : null;
+
   return (
     <>
+      <ThemeTokenProvider theme={themeData} />
       {/* Inject marketing pixels — only renders scripts if IDs are present */}
       <TrackingProvider config={trackingConfig} />
       {children}
