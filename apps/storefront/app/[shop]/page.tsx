@@ -1,6 +1,7 @@
 import { getStorefrontTheme, getStorefrontShop } from "@/lib/api";
-import { BlockRenderer } from "../components/BlockRenderer";
 import { notFound } from "next/navigation";
+import { BlockRenderer } from "../components/BlockRenderer";
+
 
 interface ShopHomePageProps {
   params: Promise<{ shop: string }>;

@@ -138,7 +138,7 @@ function ProductShowcaseBlock({ variant, shopSlug }: { variant: string, shopSlug
                 <h2 className="text-3xl font-bold mb-10 text-center">Our Collection</h2>
                 <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
                     {placeholders.map(i => (
-                        <div key={i} className={`bg-muted rounded-xl break-inside-avoid ${i % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'} hover:scale-[1.02] transition-transform cursor-pointer`}>
+                        <div key={i} className={`bg-muted rounded-xl break-inside-avoid ${i % 3 === 0 ? 'aspect-3/4' : 'aspect-square'} hover:scale-[1.02] transition-transform cursor-pointer`}>
                         </div>
                     ))}
                 </div>
@@ -156,7 +156,7 @@ function ProductShowcaseBlock({ variant, shopSlug }: { variant: string, shopSlug
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
                 {placeholders.map(i => (
                     <div key={i} className="group cursor-pointer">
-                        <div className="aspect-[4/5] bg-muted rounded-lg mb-4 overflow-hidden">
+                        <div className="aspect-4/5 bg-muted rounded-lg mb-4 overflow-hidden">
                             <div className="w-full h-full bg-secondary/50 group-hover:scale-105 transition-transform duration-500" />
                         </div>
                         <div className="flex justify-between items-start">

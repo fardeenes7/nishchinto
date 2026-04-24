@@ -10,7 +10,9 @@ import {
     IconMessage,
     IconMessageQuestion,
     IconBuildingStore,
-    IconGlobe
+    IconGlobe,
+    IconStar,
+    IconCreditCard
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -83,14 +85,60 @@ const settingsItems = [
         icon: IconGlobe
     },
     {
+        title: "Billing & Plans",
+        href: "/settings/billing",
+        icon: IconStar
+    },
+    {
+        title: "Payments",
+        href: "/settings/payments",
+        icon: IconCreditCard
+    },
+    {
+        title: "Developer API",
+        href: "/settings/api",
+        icon: IconPlugConnected
+    },
+    {
         title: "Settings",
         href: "/settings",
         icon: IconSettings
     }
 ];
 
-export function AppSidebar() {
+const accountingItems = [
+    {
+        title: "Platform Balance",
+        href: "/accounting/balance",
+        icon: IconCreditCard
+    },
+    {
+        title: "Purchase Orders",
+        href: "/accounting/purchase-orders",
+        icon: IconBox
+    }
+];
+
+import { DashboardShopContext } from "@/lib/shop-context";
+
+export function AppSidebar({ context }: { context: DashboardShopContext }) {
     const pathname = usePathname();
+    const { subscription } = context;
+    const { limits } = subscription;
+
+    const filteredNavItems = navItems.filter(item => {
+        // POS System check
+        if (item.href === "/pos" && !limits.pos_system) return false;
+        return true;
+    });
+
+    const filteredSettingsItems = settingsItems.filter(item => {
+        // Developer API check
+        if (item.href === "/settings/api" && !limits.developer_api) return false;
+        // Tracking check
+        if (item.href === "/settings/tracking" && !limits.marketing_pixels) return false;
+        return true;
+    });
 
     return (
         <Sidebar variant="inset">
@@ -105,7 +153,7 @@ export function AppSidebar() {
                             নিশ্চিন্তে
                         </span>
                         <span className="text-xs text-muted-foreground">
-                            Dashboard
+                            {subscription.tier} Plan
                         </span>
                     </div>
                 </div>
@@ -116,7 +164,7 @@ export function AppSidebar() {
                     <SidebarGroupLabel>Catalog</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {navItems.map((item) => (
+                            {filteredNavItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton
                                         asChild
@@ -138,10 +186,31 @@ export function AppSidebar() {
                 </SidebarGroup>
 
                 <SidebarGroup>
+                    <SidebarGroupLabel>Accounting</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {accountingItems.map((item) => (
+                                <SidebarMenuItem key={item.href}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname.startsWith(item.href)}
+                                    >
+                                        <Link href={item.href}>
+                                            <item.icon />
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+
+                <SidebarGroup>
                     <SidebarGroupLabel>Configuration</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {settingsItems.map((item) => (
+                            {filteredSettingsItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton
                                         asChild
@@ -164,14 +233,14 @@ export function AppSidebar() {
             <SidebarFooter>
                 <div className="flex items-center gap-2 px-2 py-2">
                     <Avatar className="size-8">
-                        <AvatarFallback>M</AvatarFallback>
+                        <AvatarFallback>{context.shopName[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col min-w-0">
                         <span className="text-sm font-medium truncate">
-                            My Shop
+                            {context.shopName}
                         </span>
                         <span className="text-xs text-muted-foreground truncate">
-                            myshop.nishchinto.com.bd
+                            {context.role}
                         </span>
                     </div>
                 </div>

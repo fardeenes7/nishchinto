@@ -255,6 +255,61 @@ export async function updateStoreTheme(data: any) {
 
 // ─── Shop Actions ────────────────────────────────────────────────────────────
 
+// ─── Payment API ─────────────────────────────────────────────────────────────
+
+export async function getPaymentMethods(shopId: string) {
+    return authFetcher("/api/v1/billing/methods/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function updatePaymentMethod(shopId: string, methodId: string, data: any) {
+    const res = await authFetcher(`/api/v1/billing/methods/${methodId}/`, {
+        method: "PATCH",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath('/settings/payments');
+    return res;
+}
+
+// ─── Developer API ───────────────────────────────────────────────────────────
+
+export async function getApiTokens(shopId: string) {
+    return authFetcher("/api/v1/billing/tokens/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function createApiToken(shopId: string, data: { name: string, scopes: string[] }) {
+    return authFetcher("/api/v1/billing/tokens/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function revokeApiToken(shopId: string, tokenId: string) {
+    return authFetcher(`/api/v1/billing/tokens/${tokenId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function getWebhooks(shopId: string) {
+    return authFetcher("/api/v1/billing/webhooks/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function registerWebhook(shopId: string, data: { url: string, subscribed_events: string[] }) {
+    return authFetcher("/api/v1/billing/webhooks/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
 export async function claimShopAction(
     _prevState: any,
     formData: FormData,
