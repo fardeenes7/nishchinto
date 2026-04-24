@@ -9,6 +9,7 @@ import {
     IconPlugConnected,
     IconMessage,
     IconMessageQuestion,
+    IconLayoutStore,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -64,6 +65,11 @@ const settingsItems = [
         title: "FAQ & Policies",
         href: "/settings/faq",
         icon: IconMessageQuestion,
+    },
+    {
+        title: "Storefront",
+        href: "/settings/storefront",
+        icon: IconLayoutStore,
     },
     {
         title: "Settings",
