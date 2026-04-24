@@ -7,6 +7,8 @@ import {
     IconSettings,
     IconBrandFacebook,
     IconPlugConnected,
+    IconMessage,
+    IconMessageQuestion,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,6 +33,11 @@ const navItems = [
         icon: IconDashboard,
     },
     {
+        title: "Inbox",
+        href: "/inbox",
+        icon: IconMessage,
+    },
+    {
         title: "Products",
         href: "/products",
         icon: IconBox,
@@ -52,6 +59,11 @@ const settingsItems = [
         title: "Tracking & Pixels",
         href: "/settings/tracking",
         icon: IconBrandFacebook,
+    },
+    {
+        title: "FAQ & Policies",
+        href: "/settings/faq",
+        icon: IconMessageQuestion,
     },
     {
         title: "Settings",
