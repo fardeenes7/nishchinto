@@ -5,7 +5,13 @@
  * Reads `API_BASE_URL` from the environment (server-only).
  */
 
-import { headersToObject, resolveBody, getBaseUrl, normaliseEndpoint, extractDjangoError } from "./utils";
+import {
+    headersToObject,
+    resolveBody,
+    getBaseUrl,
+    normaliseEndpoint,
+    extractDjangoError,
+} from "./utils";
 
 // ─── Response Types ──────────────────────────────────────────────────────────
 
@@ -38,7 +44,7 @@ export type ApiResponse<T = unknown> = ApiSuccess<T> | ApiError;
  */
 export async function fetcher<T = unknown>(
     url: string,
-    method: string = 'GET',
+    method: string = "GET",
     body?: any,
     headers?: Record<string, string>,
     queryParams?: Record<string, string | number | boolean | undefined>,
@@ -63,7 +69,7 @@ export async function fetcher<T = unknown>(
     // 2. Build Headers
     const mergedHeaders: Record<string, string> = {};
     if (inferredContentType) {
-        mergedHeaders['Content-Type'] = inferredContentType;
+        mergedHeaders["Content-Type"] = inferredContentType;
     }
     if (headers) {
         Object.assign(mergedHeaders, headers);
@@ -83,14 +89,20 @@ export async function fetcher<T = unknown>(
             success: false,
             status: 0,
             data: null,
-            error: err instanceof Error ? err.message : 'Network error — could not reach API.',
+            error:
+                err instanceof Error
+                    ? err.message
+                    : "Network error — could not reach API.",
         };
     }
 
     // 3. Parse JSON Response
     let parsedData: unknown = null;
-    const responseContentType = response.headers.get('Content-Type') ?? '';
-    if (response.status !== 204 && responseContentType.includes('application/json')) {
+    const responseContentType = response.headers.get("Content-Type") ?? "";
+    if (
+        response.status !== 204 &&
+        responseContentType.includes("application/json")
+    ) {
         try {
             parsedData = await response.json();
         } catch {
@@ -116,3 +128,5 @@ export async function fetcher<T = unknown>(
         data: parsedData as T,
     };
 }
+
+export const publicFetch = fetcher;

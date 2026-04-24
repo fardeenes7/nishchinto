@@ -4,6 +4,7 @@
 
 export {
     fetcher,
+    publicFetch,
     type ApiResponse,
     type ApiSuccess,
     type ApiError,

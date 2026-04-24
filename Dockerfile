@@ -47,7 +47,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer /app/apps/${APP_NAME}/next.config.js .
+COPY --from=installer /app/apps/${APP_NAME}/next.config.ts* ./
 COPY --from=installer /app/apps/${APP_NAME}/package.json .
 
 # Automatically leverage output traces to reduce image size
@@ -57,7 +57,7 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/${APP_NAME}/.next/static .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/${APP_NAME}/public ./apps/${APP_NAME}/public
 
 EXPOSE 3000
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 CMD node apps/${APP_NAME}/server.js
