@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@repo/ui/components/ui/card";
 import { IconBrandGoogle, IconShieldLock, IconArrowRight, IconLoader2 } from "@tabler/icons-react";
@@ -14,13 +15,12 @@ export default function LoginPage() {
 
     const handleGoogleLogin = () => {
         setLoading(true);
-        // Redirect to Google OAuth endpoint on the backend
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        window.location.href = `${apiBaseUrl}/api/v1/auth/google/login/?next=${encodeURIComponent(returnUrl)}`;
+        // Use Auth.js to handle the login flow
+        signIn("google", { callbackUrl: returnUrl });
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/20 via-background to-background p-4 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top_left,var(--tw-gradient-stops))] from-primary/20 via-background to-background p-4 relative overflow-hidden">
             {/* Background elements */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
                 <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
