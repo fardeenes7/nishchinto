@@ -8,7 +8,7 @@ import { requireActiveShopContext } from "@/lib/shop-context";
 export default async function AnalyticsPage() {
     // We use requireActiveShopContext to ensure we have a shop selected
     const context = await requireActiveShopContext();
-    const shopId = context.shop.id;
+    const shopId = context.shopId;
 
     const [salesRes, customersRes, cohortsRes] = await Promise.all([
         getSalesAnalytics(shopId),

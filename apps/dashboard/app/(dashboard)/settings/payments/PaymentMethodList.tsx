@@ -6,7 +6,7 @@ import { Switch } from "@repo/ui/components/ui/switch";
 import { Label } from "@repo/ui/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/ui/card";
 import { Badge } from "@repo/ui/components/ui/badge";
-import { IconCreditCard, IconCash, IconBuildingBank, IconBrandBcash } from "@tabler/icons-react";
+import { IconCreditCard, IconCash, IconBuildingBank, IconWallet } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 export function PaymentMethodList({ shopId }: { shopId: string }) {
@@ -37,7 +37,7 @@ export function PaymentMethodList({ shopId }: { shopId: string }) {
     const getIcon = (method: string) => {
         switch (method) {
             case "COD": return <IconCash className="size-5" />;
-            case "BKASH": return <IconBrandBcash className="size-5" />;
+            case "BKASH": return <IconWallet className="size-5" />;
             case "BANK_TRANSFER": return <IconBuildingBank className="size-5" />;
             default: return <IconCreditCard className="size-5" />;
         }

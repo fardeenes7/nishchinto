@@ -357,3 +357,105 @@ export async function getAffiliateStats(shopId: string) {
         headers: { "X-Tenant-ID": shopId },
     });
 }
+// ─── Order API ───────────────────────────────────────────────────────────────
+
+export async function getOrders(shopId: string, params?: any) {
+    return authFetcher("/api/v1/orders/", {
+        headers: { "X-Tenant-ID": shopId },
+        queryParams: params,
+    });
+}
+
+export async function getOrder(shopId: string, orderId: string) {
+    return authFetcher(`/api/v1/orders/${orderId}/`, {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function transitionOrder(shopId: string, orderId: string, data: { to_status: string, reason?: string }) {
+    const res = await authFetcher(`/api/v1/orders/${orderId}/transition/`, {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) {
+        revalidatePath('/orders');
+        revalidatePath(`/orders/${orderId}`);
+    }
+    return res;
+}
+
+// ─── Accounting API ──────────────────────────────────────────────────────────
+
+export async function getMerchantBalance(shopId: string) {
+    return authFetcher("/api/v1/accounting/balance/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function getMerchantPayouts(shopId: string) {
+    return authFetcher("/api/v1/accounting/payouts/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function getMerchantLedger(shopId: string) {
+    return authFetcher("/api/v1/accounting/ledger/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+// ─── Purchase Order API ──────────────────────────────────────────────────────
+
+export async function getPurchaseOrders(shopId: string) {
+    return authFetcher("/api/v1/accounting/purchase-orders/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function createPurchaseOrder(shopId: string, data: any) {
+    return authFetcher("/api/v1/accounting/purchase-orders/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function updatePurchaseOrder(shopId: string, poId: string, data: any) {
+    return authFetcher(`/api/v1/accounting/purchase-orders/${poId}/`, {
+        method: "PATCH",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function deletePurchaseOrder(shopId: string, poId: string) {
+    return authFetcher(`/api/v1/accounting/purchase-orders/${poId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+// ─── Fraud API ──────────────────────────────────────────────────────────────
+
+export async function getFraudConfig(shopId: string) {
+    return authFetcher("/api/v1/fraud/config/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function updateFraudConfig(shopId: string, data: any) {
+    return authFetcher("/api/v1/fraud/config/", {
+        method: "PATCH",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function checkCustomerRisk(shopId: string, phoneNumber: string) {
+    return authFetcher("/api/v1/fraud/check_risk/", {
+        method: "POST",
+        body: { phone_number: phoneNumber },
+        headers: { "X-Tenant-ID": shopId },
+    });
+}

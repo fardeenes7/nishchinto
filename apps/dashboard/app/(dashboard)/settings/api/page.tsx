@@ -33,7 +33,7 @@ export default async function DeveloperApiPage() {
                 <div className="flex items-center gap-2">
                     <h1 className="text-3xl font-bold tracking-tight">Developer API</h1>
                     <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                        {subscription.plan.name}
+                        {subscription.tier}
                     </Badge>
                 </div>
                 <p className="text-muted-foreground">

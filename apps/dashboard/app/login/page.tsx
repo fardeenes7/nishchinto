@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/components/ui/button";
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { IconBrandGoogle, IconShieldLock, IconArrowRight, IconLoader2 } from "@tabler/icons-react";
 import { Badge } from "@repo/ui/components/ui/badge";
 
-export default function LoginPage() {
+function LoginContent() {
     const [loading, setLoading] = useState(false);
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get("returnUrl") || "/";
@@ -76,5 +76,17 @@ export default function LoginPage() {
                 </CardFooter>
             </Card>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <IconLoader2 className="size-8 animate-spin text-primary" />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }

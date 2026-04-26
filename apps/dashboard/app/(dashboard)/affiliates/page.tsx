@@ -6,8 +6,8 @@ import { IconCopy, IconExternalLink } from "@tabler/icons-react";
 
 export default async function AffiliatePage() {
     const context = await requireActiveShopContext();
-    const shopId = context.shop.id;
-    const subdomain = context.shop.subdomain;
+    const shopId = context.shopId;
+    const subdomain = context.shopId; // TODO: Add subdomain to context if needed
 
     const statsRes = await getAffiliateStats(shopId);
     const stats = statsRes.data || { total_clicks: 0, total_referrals: 0, verified_referrals: 0, total_reward: 0 };

@@ -39,8 +39,8 @@ export default function AdsPage() {
   useEffect(() => {
     // Hack to get shopId from path
     const sid = window.location.pathname.split("/")[1];
-    setShopId(sid);
-    fetchAdAccounts(sid);
+    setShopId(sid || "");
+    if (sid) fetchAdAccounts(sid);
   }, []);
 
   const fetchAdAccounts = async (sid: string) => {

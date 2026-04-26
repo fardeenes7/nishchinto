@@ -14,7 +14,8 @@ import {
     IconStar,
     IconCreditCard,
     IconChartBar,
-    IconAffiliate
+    IconAffiliate,
+    IconShieldLock
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,6 +38,11 @@ const navItems = [
         title: "Overview",
         href: "/",
         icon: IconDashboard
+    },
+    {
+        title: "Orders",
+        href: "/orders",
+        icon: IconBox
     },
     {
         title: "Advanced Analytics",
@@ -110,6 +116,11 @@ const settingsItems = [
         title: "Developer API",
         href: "/settings/api",
         icon: IconPlugConnected
+    },
+    {
+        title: "Fraud Protection",
+        href: "/settings/fraud",
+        icon: IconShieldLock
     },
     {
         title: "Settings",

@@ -4,19 +4,31 @@ export type DashboardShopContext = {
     shopId: string;
     shopName: string;
     baseCurrency: string;
+    shop: {
+        id: string;
+        name: string;
+        subdomain: string;
+        base_currency: string;
+    };
     role: "OWNER" | "MANAGER" | "CASHIER";
     subscription: {
         tier: "FREE" | "BASIC" | "PRO" | "BUSINESS" | "CUSTOM";
         status: "ACTIVE" | "GRACE" | "SUSPENDED" | "COMPLIANCE_LOCK" | "CANCELLED";
         is_storefront_live: boolean;
         suspension_banner: string | null;
+        grace_days_remaining: number | null;
+        current_period_end: string | null;
+        last_paid_at: string | null;
+        is_billing_exempt: boolean;
         limits: {
             max_products: number;
             max_staff: number;
             pos_system: boolean;
             developer_api: boolean;
+            marketing_pixels: boolean;
             [key: string]: any;
         };
+        plan?: any;
     };
 };
 
@@ -45,6 +57,12 @@ export async function requireActiveShopContext(): Promise<DashboardShopContext> 
         shopId: contextRes.data.shop.id,
         shopName: contextRes.data.shop.name,
         baseCurrency: contextRes.data.shop.base_currency,
+        shop: {
+            id: contextRes.data.shop.id,
+            name: contextRes.data.shop.name,
+            subdomain: contextRes.data.shop.subdomain || contextRes.data.shop.id,
+            base_currency: contextRes.data.shop.base_currency,
+        },
         role: contextRes.data.role,
         subscription: contextRes.data.subscription,
     };
