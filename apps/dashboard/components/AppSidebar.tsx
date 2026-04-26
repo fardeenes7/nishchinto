@@ -12,7 +12,9 @@ import {
     IconBuildingStore,
     IconGlobe,
     IconStar,
-    IconCreditCard
+    IconCreditCard,
+    IconChartBar,
+    IconAffiliate
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,6 +37,16 @@ const navItems = [
         title: "Overview",
         href: "/",
         icon: IconDashboard
+    },
+    {
+        title: "Advanced Analytics",
+        href: "/analytics",
+        icon: IconChartBar
+    },
+    {
+        title: "Affiliate Program",
+        href: "/affiliates",
+        icon: IconAffiliate
     },
     {
         title: "Inbox",
@@ -175,7 +187,7 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
                                         }
                                     >
                                         <Link href={item.href}>
-                                            <item.icon />
+                                            <item.icon size={18} />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -196,7 +208,7 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
                                         isActive={pathname.startsWith(item.href)}
                                     >
                                         <Link href={item.href}>
-                                            <item.icon />
+                                            <item.icon size={18} />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -219,7 +231,7 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
                                         )}
                                     >
                                         <Link href={item.href}>
-                                            <item.icon />
+                                            <item.icon size={18} />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>

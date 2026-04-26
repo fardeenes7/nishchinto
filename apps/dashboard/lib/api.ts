@@ -322,6 +322,38 @@ export async function claimShopAction(
         return { success: false, error: 'All fields are required.' };
     }
 
+
     const res = await fetcher('/api/v1/shops/claim/', 'POST', { token, subdomain, password });
     return res;
+}
+
+// ─── Analytics API ───────────────────────────────────────────────────────────
+
+export async function getSalesAnalytics(shopId: string, params?: { start_date?: string, end_date?: string }) {
+    return authFetcher("/api/v1/analytics/metrics/sales/", {
+        headers: { "X-Tenant-ID": shopId },
+        queryParams: params,
+    });
+}
+
+export async function getTopCustomers(shopId: string, limit: number = 10) {
+    return authFetcher("/api/v1/analytics/metrics/top_customers/", {
+        headers: { "X-Tenant-ID": shopId },
+        queryParams: { limit },
+    });
+}
+
+export async function getCohortAnalytics(shopId: string) {
+    return authFetcher("/api/v1/analytics/metrics/cohorts/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+
+// ─── Affiliate API ──────────────────────────────────────────────────────────
+
+export async function getAffiliateStats(shopId: string) {
+    return authFetcher("/api/v1/affiliates/stats/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
 }
