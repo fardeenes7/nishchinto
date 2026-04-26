@@ -37,6 +37,8 @@ import { productSchema, type ProductFormValues } from "../_schemas/productSchema
 import { RichTextEditor } from "./RichTextEditor";
 import { ImageUploader } from "./ImageUploader";
 import { VariantMatrix } from "./VariantMatrix";
+import { ProductAIPrompter } from "./ProductAIPrompter";
+import { ProductAIImageGen } from "./ProductAIImageGen";
 import { createProduct, updateProduct, createVariant } from "@/lib/api";
 import type { Category, ProductDetail } from "@repo/api";
 
@@ -64,6 +66,7 @@ export function ProductForm({
     control,
     formState: { errors, isDirty },
     watch,
+    setValue,
   } = useForm<ProductFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: standardSchemaResolver(productSchema) as any,
@@ -210,7 +213,17 @@ export function ProductForm({
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="product-description">Description</FieldLabel>
+                    <div className="flex items-center justify-between">
+                      <FieldLabel htmlFor="product-description">Description</FieldLabel>
+                      <ProductAIPrompter 
+                        shopId={shopId}
+                        productName={watchedName}
+                        specifications={watch("specifications") || {}}
+                        onGenerate={(desc) => {
+                          setValue("description", desc, { shouldDirty: true });
+                        }}
+                      />
+                    </div>
                     <Controller
                       name="description"
                       control={control}
@@ -228,7 +241,16 @@ export function ProductForm({
               {/* Images */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Images</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Images</CardTitle>
+                    <ProductAIImageGen 
+                      shopId={shopId}
+                      productName={watchedName}
+                      onImageGenerated={(mediaId) => {
+                        setMediaIds((prev) => [...prev, mediaId]);
+                      }}
+                    />
+                  </div>
                   <CardDescription>
                     Upload up to 10 images. First image becomes the thumbnail.
                     All images are automatically converted to WebP.
