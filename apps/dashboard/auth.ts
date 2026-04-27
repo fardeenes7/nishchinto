@@ -9,11 +9,13 @@ import Google from "next-auth/providers/google";
 declare module "next-auth" {
     interface Session extends DefaultSession {
         accessToken?: string;
+        error?: string;
     }
 
     interface User {
         accessToken?: string;
         refreshToken?: string;
+        accessTokenExpires?: number;
     }
 }
 
@@ -21,6 +23,47 @@ declare module "next-auth/jwt" {
     interface JWT {
         accessToken?: string;
         refreshToken?: string;
+        accessTokenExpires?: number;
+        error?: string;
+    }
+}
+
+async function refreshAccessToken(token: JWT) {
+    try {
+        const baseUrl = process.env.API_BASE_URL || "http://localhost:8000";
+        console.log("Refreshing Django access token...");
+
+        const response = await fetch(`${baseUrl}/api/v1/auth/token/refresh/`, {
+            method: "POST",
+            body: JSON.stringify({
+                refresh: token.refreshToken
+            }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const refreshedTokens = await response.json();
+
+        if (!response.ok) {
+            throw refreshedTokens;
+        }
+
+        console.log("Django Token Refresh Success");
+
+        return {
+            ...token,
+            accessToken: refreshedTokens.access,
+            // Default to 1 day if not provided by backend. 
+            // SimpleJWT default is 1 day as per our settings.
+            accessTokenExpires: Date.now() + 24 * 60 * 60 * 1000,
+            // Fallback to old refresh token if new one isn't returned
+            refreshToken: refreshedTokens.refresh ?? token.refreshToken
+        };
+    } catch (error) {
+        console.error("Error refreshing access token:", error);
+        return {
+            ...token,
+            error: "RefreshAccessTokenError"
+        };
     }
 }
 
@@ -39,9 +82,6 @@ const result = NextAuth({
         })
     ],
     callbacks: {
-        // signIn only gates access — returns true/false.
-        // Data CANNOT be passed to jwt by mutating `user` here in NextAuth v5;
-        // `user` in jwt is a fresh profile object, not the same reference.
         async signIn({ account }) {
             if (account?.provider === "google") {
                 return !!account.access_token;
@@ -49,8 +89,7 @@ const result = NextAuth({
             return false;
         },
         async jwt({ token, account }) {
-            // `account` is ONLY present on the very first sign-in.
-            // This is the correct place to do the Django token exchange.
+            // 1. Initial sign-in: Exchange Google token for Django JWT
             if (account?.provider === "google" && account.access_token) {
                 try {
                     const baseUrl =
@@ -73,10 +112,15 @@ const result = NextAuth({
                     if (response.ok) {
                         const data = await response.json();
                         console.log("Django Auth Success");
-                        // dj-rest-auth + SimpleJWT returns { access, refresh, user: { pk } }
-                        token.sub = String(data.user.pk);
-                        token.accessToken = data.access;
-                        token.refreshToken = data.refresh;
+
+                        return {
+                            ...token,
+                            sub: String(data.user.pk),
+                            accessToken: data.access,
+                            refreshToken: data.refresh,
+                            // Set expiry (default 1 day)
+                            accessTokenExpires: Date.now() + 24 * 60 * 60 * 1000
+                        };
                     } else {
                         const errorText = await response.text();
                         console.error(
@@ -91,10 +135,26 @@ const result = NextAuth({
                     token.error = "DjangoAuthError";
                 }
             }
+
+            // 2. Subsequent use: Return previous token if the access token has not expired yet
+            // We use a 30 second buffer
+            if (
+                token.accessTokenExpires &&
+                Date.now() < token.accessTokenExpires - 30 * 1000
+            ) {
+                return token;
+            }
+
+            // 3. Access token has expired, try to update it
+            if (token.refreshToken) {
+                return refreshAccessToken(token);
+            }
+
             return token;
         },
         async session({ session, token }) {
             session.accessToken = token.accessToken;
+            session.error = token.error;
             return session;
         }
     },
