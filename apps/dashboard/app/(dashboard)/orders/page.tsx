@@ -76,7 +76,7 @@ export default async function OrdersPage({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {orders.length > 0 ? (
+                        {orders && orders.length > 0 ? (
                             orders.map((order: any) => (
                                 <TableRow key={order.id}>
                                     <TableCell className="font-medium">#{order.short_id}</TableCell>

@@ -112,7 +112,7 @@ export default async function BalancePage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {ledger.length > 0 ? (
+                            {ledger && ledger.length > 0 ? (
                                 ledger.map((entry: any) => (
                                     <TableRow key={entry.id}>
                                         <TableCell className="pl-6">

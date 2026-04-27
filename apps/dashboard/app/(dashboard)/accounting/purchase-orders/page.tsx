@@ -53,7 +53,7 @@ export default async function PurchaseOrdersPage() {
             </header>
 
             <div className="grid gap-6">
-                {purchaseOrders.length > 0 ? (
+                {purchaseOrders && purchaseOrders.length > 0 ? (
                     purchaseOrders.map((po: any) => (
                         <Card key={po.id} className="border-border/50 shadow-sm overflow-hidden">
                             <CardHeader className="bg-muted/30 pb-4">

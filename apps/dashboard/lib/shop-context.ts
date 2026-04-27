@@ -43,6 +43,11 @@ export async function requireActiveShopContext(): Promise<DashboardShopContext> 
             redirect("/login");
         }
 
+        // If no shop is found (404), redirect to the onboarding form
+        if (contextRes.status === 404) {
+            redirect("/onboarding");
+        }
+
         // If the backend is down (status 0) or other error, we throw 
         // which will be caught by Next.js error boundaries.
         // But we provide a more user-friendly message.
