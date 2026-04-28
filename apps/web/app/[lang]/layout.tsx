@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 const baloo = Baloo_Da_2({});
 
 export const metadata: Metadata = {
-    title: "Nishchinto | Secure SaaS for Local Merchants",
+    title: "Mohajon | Secure SaaS for Local Merchants",
     description: "Launch your high-performance online store instantly.",
     icons: {
         icon: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     },
     manifest: "/site.webmanifest",
     openGraph: {
-        title: "Nishchinto SaaS Platform",
+        title: "Mohajon SaaS Platform",
         description: "Empowering local merchants with scalable eCommerce."
     }
 };

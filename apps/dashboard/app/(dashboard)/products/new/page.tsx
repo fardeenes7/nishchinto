@@ -4,7 +4,7 @@ import { requireActiveShopContext } from "@/lib/shop-context";
 import { ProductForm } from "../_components/ProductForm";
 
 export const metadata: Metadata = {
-    title: "New Product | Nishchinto Dashboard",
+    title: "New Product | Mohajon Dashboard"
 };
 
 export default async function NewProductPage() {

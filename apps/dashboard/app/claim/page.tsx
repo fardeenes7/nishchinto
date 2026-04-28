@@ -6,12 +6,13 @@
  * This avoids the CSR-bailout that `useSearchParams()` causes.
  */
 
-import { Suspense } from 'react';
-import { ClaimForm } from './_components/ClaimForm';
+import { Suspense } from "react";
+import { ClaimForm } from "./_components/ClaimForm";
 
 export const metadata = {
-    title: 'Claim Your Shop — Nishchinto',
-    description: 'Set up your subdomain and password to activate your Nishchinto store.',
+    title: "Claim Your Shop — Mohajon",
+    description:
+        "Set up your subdomain and password to activate your Mohajon store."
 };
 
 interface ClaimPageProps {
@@ -28,12 +29,19 @@ export default async function ClaimPage({ searchParams }: ClaimPageProps) {
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold">Claim Your Shop</h1>
                     <p className="text-muted-foreground text-sm mt-2">
-                        Choose your unique subdomain and set a password to activate your store.
+                        Choose your unique subdomain and set a password to
+                        activate your store.
                     </p>
                 </div>
                 {/* Suspense is required here because ClaimForm uses client hooks */}
-                <Suspense fallback={<div className="text-center text-muted-foreground">Loading...</div>}>
-                    <ClaimForm token={token ?? ''} />
+                <Suspense
+                    fallback={
+                        <div className="text-center text-muted-foreground">
+                            Loading...
+                        </div>
+                    }
+                >
+                    <ClaimForm token={token ?? ""} />
                 </Suspense>
             </div>
         </main>

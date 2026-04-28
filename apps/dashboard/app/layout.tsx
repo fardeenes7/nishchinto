@@ -1,34 +1,34 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "@repo/ui/globals.css";
 import { Toaster } from "@repo/ui/components/ui/sonner";
 import { CrashReporter } from "@/components/CrashReporter";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const outfit = Outfit({
+    subsets: ["latin"],
+    variable: "--font-sans"
 });
 
 export const metadata: Metadata = {
-  title: "Nishchinto Dashboard",
-  description: "ব্যবসা হোক নিশ্চিন্তে — Seller Dashboard",
-  icons: {
-    icon: "/favicon.ico",
-  },
+    title: "Mohajon Dashboard",
+    description: "ব্যবসা হোক নিশ্চিন্তে — Seller Dashboard",
+    icons: {
+        icon: "/favicon.ico"
+    }
 };
 
 export default function RootLayout({
-  children,
+    children
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="bn" suppressHydrationWarning>
-      <body className={inter.variable}>
-        {children}
-        <CrashReporter />
-        <Toaster richColors position="top-right" />
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" className={outfit.variable} suppressHydrationWarning>
+            <body>
+                {children}
+                <CrashReporter />
+                <Toaster richColors position="top-right" />
+            </body>
+        </html>
+    );
 }

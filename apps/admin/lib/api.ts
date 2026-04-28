@@ -15,14 +15,14 @@ export async function authFetcher<T = any>(
         body?: any;
         headers?: Record<string, string>;
         queryParams?: any;
-    } = {},
+    } = {}
 ): Promise<ApiResponse<T>> {
     const { method = "GET", body, headers = {}, queryParams } = options;
 
     const cookieStore = await cookies();
     const token =
         cookieStore.get("access_token")?.value ??
-        cookieStore.get("nishchinto_jwt")?.value;
+        cookieStore.get("mohajon_jwt")?.value;
 
     const mergedHeaders = { ...headers };
     if (token) {
@@ -66,7 +66,7 @@ export interface SettlementPayout {
 
 export async function getSettlementPayouts() {
     return authFetcher<SettlementPayout[]>(
-        "/api/v1/accounting/admin/settlements/",
+        "/api/v1/accounting/admin/settlements/"
     );
 }
 
@@ -81,7 +81,7 @@ export type ApproveActionState = {
  */
 export async function approveWaitlistAction(
     _prevState: ApproveActionState,
-    formData: FormData,
+    formData: FormData
 ): Promise<ApproveActionState> {
     const entryId = formData.get("entryId") as string;
 
@@ -92,8 +92,8 @@ export async function approveWaitlistAction(
     const res = await authFetcher(
         `/api/v1/marketing/admin/waitlist/${entryId}/approve/`,
         {
-            method: "POST",
-        },
+            method: "POST"
+        }
     );
 
     if (!res.success) {
@@ -103,7 +103,7 @@ export async function approveWaitlistAction(
     revalidatePath("/");
     return {
         status: "success",
-        message: "Approved — invite email dispatched.",
+        message: "Approved — invite email dispatched."
     };
 }
 
@@ -114,7 +114,7 @@ export type SettlementActionState = {
 
 export async function approveSettlementAction(
     _prevState: SettlementActionState,
-    formData: FormData,
+    formData: FormData
 ): Promise<SettlementActionState> {
     const payoutId = formData.get("payoutId") as string;
 
@@ -127,9 +127,9 @@ export async function approveSettlementAction(
         {
             method: "POST",
             body: {
-                admin_note: "Approved via admin dashboard.",
-            },
-        },
+                admin_note: "Approved via admin dashboard."
+            }
+        }
     );
 
     if (!res.success) {
@@ -142,7 +142,7 @@ export async function approveSettlementAction(
 
 export async function rejectSettlementAction(
     _prevState: SettlementActionState,
-    formData: FormData,
+    formData: FormData
 ): Promise<SettlementActionState> {
     const payoutId = formData.get("payoutId") as string;
 
@@ -155,9 +155,9 @@ export async function rejectSettlementAction(
         {
             method: "POST",
             body: {
-                admin_note: "Rejected via admin dashboard.",
-            },
-        },
+                admin_note: "Rejected via admin dashboard."
+            }
+        }
     );
 
     if (!res.success) {
@@ -167,6 +167,6 @@ export async function rejectSettlementAction(
     revalidatePath("/settlements");
     return {
         status: "success",
-        message: "Payout rejected and balance restored.",
+        message: "Payout rejected and balance restored."
     };
 }

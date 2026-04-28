@@ -4,7 +4,7 @@ import { ApprovePayoutButton } from "./_components/ApprovePayoutButton";
 import { RejectPayoutButton } from "./_components/RejectPayoutButton";
 
 export const metadata = {
-    title: "Settlement Dashboard — Nishchinto Admin",
+    title: "Settlement Dashboard — Mohajon Admin"
 };
 
 function StatusBadge({ status }: { status: SettlementPayout["status"] }) {
@@ -16,7 +16,7 @@ function StatusBadge({ status }: { status: SettlementPayout["status"] }) {
         PAID: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
         FAILED: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
         REVERSED:
-            "bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200",
+            "bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
     };
 
     return (
@@ -69,7 +69,7 @@ async function SettlementTable() {
                             </td>
                             <td className="px-6 py-4 text-muted-foreground">
                                 {new Date(payout.created_at).toLocaleDateString(
-                                    "en-GB",
+                                    "en-GB"
                                 )}
                             </td>
                             <td className="px-6 py-4 text-muted-foreground">

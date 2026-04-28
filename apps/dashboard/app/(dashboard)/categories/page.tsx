@@ -7,8 +7,8 @@ import { CategoryTree } from "./_components/CategoryTree";
 import { NewCategoryButton } from "./_components/NewCategoryButton";
 
 export const metadata: Metadata = {
-    title: "Categories | Nishchinto Dashboard",
-    description: "Manage your product categories",
+    title: "Categories | Mohajon Dashboard",
+    description: "Manage your product categories"
 };
 
 async function CategoriesContent({ shopId }: { shopId: string }) {

@@ -14,12 +14,12 @@ import {
     PaginationItem,
     PaginationLink,
     PaginationNext,
-    PaginationPrevious,
+    PaginationPrevious
 } from "@repo/ui/components/ui/pagination";
 
 export const metadata: Metadata = {
-    title: "Products | Nishchinto Dashboard",
-    description: "Manage your product catalog",
+    title: "Products | Mohajon Dashboard",
+    description: "Manage your product catalog"
 };
 
 interface ProductsPageProps {
@@ -35,7 +35,7 @@ async function ProductsContent({
     currency,
     status,
     search,
-    page,
+    page
 }: {
     shopId: string;
     currency: string;
@@ -47,12 +47,12 @@ async function ProductsContent({
         status: status && status !== "all" ? status : undefined,
         search,
         page,
-        page_size: 20,
+        page_size: 20
     });
     const socialConnectionsRes = await getSocialConnections(shopId);
     const defaultSocialConnectionId = socialConnectionsRes.success
         ? (socialConnectionsRes.data as any[]).find(
-              (connection) => connection.status === "ACTIVE",
+              (connection) => connection.status === "ACTIVE"
           )?.id
         : undefined;
 
@@ -99,7 +99,7 @@ async function ProductsContent({
                                         {p}
                                     </PaginationLink>
                                 </PaginationItem>
-                            ),
+                            )
                         )}
                         {page < num_pages && (
                             <PaginationItem>
@@ -114,7 +114,7 @@ async function ProductsContent({
 }
 
 export default async function ProductsPage({
-    searchParams,
+    searchParams
 }: ProductsPageProps) {
     const params = await searchParams;
     const page = parseInt(params.page ?? "1");

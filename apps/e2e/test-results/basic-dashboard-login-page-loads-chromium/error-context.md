@@ -30,38 +30,38 @@ Call log:
 
 ```yaml
 - generic [active] [ref=e1]:
-  - generic [ref=e3]:
-    - generic [ref=e4]:
-      - img [ref=e7]
-      - generic [ref=e10]:
-        - generic [ref=e11]: Seller Dashboard
-        - generic [ref=e12]: Sign in with your Google account to manage your shop
-    - generic [ref=e13]:
-      - generic [ref=e14]: By signing in, you agree to Nishchinto's Terms of Service and Privacy Policy. All accounts are now open to the public.
-      - button "Sign in with Google" [ref=e15]:
-        - img
-        - text: Sign in with Google
-    - generic [ref=e16]:
-      - generic [ref=e17]:
-        - generic [ref=e18]: Secure OAuth 2.0
-        - generic [ref=e19]: Public Access Live
-      - paragraph [ref=e20]: Powered by Nishchinto Cloud Security
-  - button "Report Bug" [ref=e21]:
-    - img [ref=e22]
-  - region "Notifications alt+T"
-  - alert [ref=e29]
+      - generic [ref=e3]:
+            - generic [ref=e4]:
+                  - img [ref=e7]
+                  - generic [ref=e10]:
+                        - generic [ref=e11]: Seller Dashboard
+                        - generic [ref=e12]: Sign in with your Google account to manage your shop
+            - generic [ref=e13]:
+                  - generic [ref=e14]: By signing in, you agree to Mohajon's Terms of Service and Privacy Policy. All accounts are now open to the public.
+                  - button "Sign in with Google" [ref=e15]:
+                        - img
+                        - text: Sign in with Google
+            - generic [ref=e16]:
+                  - generic [ref=e17]:
+                        - generic [ref=e18]: Secure OAuth 2.0
+                        - generic [ref=e19]: Public Access Live
+                  - paragraph [ref=e20]: Powered by Mohajon Cloud Security
+      - button "Report Bug" [ref=e21]:
+            - img [ref=e22]
+      - region "Notifications alt+T"
+      - alert [ref=e29]
 ```
 
 # Test source
 
 ```ts
   1  | import { test, expect } from '@playwright/test';
-  2  | 
+  2  |
   3  | test('landing page loads', async ({ page }) => {
   4  |   await page.goto('/');
-  5  |   await expect(page).toHaveTitle(/Nishchinto/);
+  5  |   await expect(page).toHaveTitle(/Mohajon/);
   6  | });
-  7  | 
+  7  |
   8  | test('dashboard login page loads', async ({ page }) => {
   9  |   await page.goto('http://localhost:3003/login');
   10 |   await expect(page).toHaveURL(/.*login/);
@@ -69,5 +69,5 @@ Call log:
 > 12 |   await expect(page.getByText(/Sign in/i)).toBeVisible();
      |                                            ^ Error: expect(locator).toBeVisible() failed
   13 | });
-  14 | 
+  14 |
 ```

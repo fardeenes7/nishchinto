@@ -18,7 +18,12 @@ const nextConfig = {
             },
             {
                 protocol: "https",
-                hostname: "*.nishchinto.com.bd",
+                hostname: "*.mohajon.io",
+                pathname: "/**"
+            },
+            {
+                protocol: "https",
+                hostname: "*.mohajon.store",
                 pathname: "/**"
             }
         ]

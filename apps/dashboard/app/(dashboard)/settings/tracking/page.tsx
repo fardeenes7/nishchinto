@@ -4,13 +4,13 @@ import { requireActiveShopContext } from "@/lib/shop-context";
 import {
     Alert,
     AlertDescription,
-    AlertTitle,
+    AlertTitle
 } from "@repo/ui/components/ui/alert";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { TrackingConfigForm } from "./TrackingConfigForm";
 
 export const metadata: Metadata = {
-    title: "Tracking & Pixels | Nishchinto Dashboard",
+    title: "Tracking & Pixels | Mohajon Dashboard"
 };
 
 export default async function TrackingConfigPage() {

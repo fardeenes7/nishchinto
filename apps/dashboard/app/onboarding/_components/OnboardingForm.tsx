@@ -130,7 +130,7 @@ export function OnboardingForm() {
                                     />
                                     <InputGroupAddon align="inline-end">
                                         <InputGroupText>
-                                            .nishchinto.com.bd
+                                            .mohajon.store
                                         </InputGroupText>
                                     </InputGroupAddon>
                                 </InputGroup>

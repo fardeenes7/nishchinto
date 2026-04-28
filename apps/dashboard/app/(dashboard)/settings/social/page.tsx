@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
     Alert,
     AlertDescription,
-    AlertTitle,
+    AlertTitle
 } from "@repo/ui/components/ui/alert";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { getSocialConnections } from "@/lib/api";
@@ -15,19 +15,19 @@ import {
     CardContent,
     CardDescription,
     CardHeader,
-    CardTitle,
+    CardTitle
 } from "@repo/ui/components/ui/card";
 import {
     completeSocialOAuthSelectionAction,
-    startSocialOAuthAction,
+    startSocialOAuthAction
 } from "./actions";
 
 export const metadata: Metadata = {
-    title: "Social Connections | Nishchinto Dashboard",
+    title: "Social Connections | Mohajon Dashboard"
 };
 
 export default async function SocialConnectionsPage({
-    searchParams,
+    searchParams
 }: {
     searchParams: Promise<{ code?: string; state?: string }>;
 }) {
@@ -40,7 +40,7 @@ export default async function SocialConnectionsPage({
     if (params.code && params.state) {
         const oauthRes = await handleSocialOAuthCallback(activeShop.shopId, {
             code: params.code,
-            state: params.state,
+            state: params.state
         });
         if (oauthRes.success) {
             oauthStateForSelection = oauthRes.data.oauth_state ?? null;

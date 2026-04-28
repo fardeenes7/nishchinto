@@ -16,40 +16,52 @@ import { claimShopAction } from "@/lib/api";
 import { type ApiResponse } from "@repo/api";
 import Link from "next/link";
 
-const claimSchema = z.object({
-    subdomain: z
-        .string()
-        .min(3, "Subdomain must be at least 3 characters")
-        .max(63, "Subdomain is too long")
-        .regex(/^[a-z0-9-]+$/, "Only lowercase letters, numbers, and hyphens"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    passwordConfirm: z.string(),
-}).refine((data) => data.password === data.passwordConfirm, {
-    message: "Passwords do not match",
-    path: ["passwordConfirm"],
-});
+const claimSchema = z
+    .object({
+        subdomain: z
+            .string()
+            .min(3, "Subdomain must be at least 3 characters")
+            .max(63, "Subdomain is too long")
+            .regex(
+                /^[a-z0-9-]+$/,
+                "Only lowercase letters, numbers, and hyphens"
+            ),
+        password: z.string().min(8, "Password must be at least 8 characters"),
+        passwordConfirm: z.string()
+    })
+    .refine((data) => data.password === data.passwordConfirm, {
+        message: "Passwords do not match",
+        path: ["passwordConfirm"]
+    });
 
 type ClaimFormValues = z.infer<typeof claimSchema>;
 
-const initialState: ApiResponse = { success: false, status: 0, data: null, error: "" };
+const initialState: ApiResponse = {
+    success: false,
+    status: 0,
+    data: null,
+    error: ""
+};
 
 export function ClaimForm({ token }: { token: string }) {
     const [state, formAction, isPending] = useActionState(
         claimShopAction,
-        initialState,
+        initialState
     );
 
     const form = useForm<ClaimFormValues>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: standardSchemaResolver(claimSchema) as any,
-        defaultValues: { subdomain: "", password: "", passwordConfirm: "" },
+        defaultValues: { subdomain: "", password: "", passwordConfirm: "" }
     });
 
     if (state.success) {
         return (
             <div className="text-center space-y-4">
                 <div className="text-5xl">🎉</div>
-                <h2 className="text-xl font-bold text-green-600">Shop Activated!</h2>
+                <h2 className="text-xl font-bold text-green-600">
+                    Shop Activated!
+                </h2>
                 <p className="text-muted-foreground">
                     Your store is live. Log in to access your dashboard.
                 </p>
@@ -97,7 +109,10 @@ export function ClaimForm({ token }: { token: string }) {
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <div className="space-y-1.5">
-                        <label htmlFor="claim-subdomain" className="text-sm font-medium">
+                        <label
+                            htmlFor="claim-subdomain"
+                            className="text-sm font-medium"
+                        >
                             Your Store Address
                         </label>
                         <div className="flex items-center gap-0">
@@ -110,11 +125,13 @@ export function ClaimForm({ token }: { token: string }) {
                                 className="flex-1 px-3 py-2 border rounded-l-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                             />
                             <span className="px-3 py-2 border border-l-0 bg-muted text-muted-foreground rounded-r-md text-sm whitespace-nowrap">
-                                .nishchinto.com.bd
+                                .mohajon.store
                             </span>
                         </div>
                         {fieldState.error && (
-                            <p className="text-xs text-destructive">{fieldState.error.message}</p>
+                            <p className="text-xs text-destructive">
+                                {fieldState.error.message}
+                            </p>
                         )}
                     </div>
                 )}
@@ -125,7 +142,10 @@ export function ClaimForm({ token }: { token: string }) {
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <div className="space-y-1.5">
-                        <label htmlFor="claim-password" className="text-sm font-medium">
+                        <label
+                            htmlFor="claim-password"
+                            className="text-sm font-medium"
+                        >
                             Password
                         </label>
                         <input
@@ -138,7 +158,9 @@ export function ClaimForm({ token }: { token: string }) {
                             className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                         {fieldState.error && (
-                            <p className="text-xs text-destructive">{fieldState.error.message}</p>
+                            <p className="text-xs text-destructive">
+                                {fieldState.error.message}
+                            </p>
                         )}
                     </div>
                 )}
@@ -149,7 +171,10 @@ export function ClaimForm({ token }: { token: string }) {
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <div className="space-y-1.5">
-                        <label htmlFor="claim-password-confirm" className="text-sm font-medium">
+                        <label
+                            htmlFor="claim-password-confirm"
+                            className="text-sm font-medium"
+                        >
                             Confirm Password
                         </label>
                         <input
@@ -162,7 +187,9 @@ export function ClaimForm({ token }: { token: string }) {
                             className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                         {fieldState.error && (
-                            <p className="text-xs text-destructive">{fieldState.error.message}</p>
+                            <p className="text-xs text-destructive">
+                                {fieldState.error.message}
+                            </p>
                         )}
                     </div>
                 )}

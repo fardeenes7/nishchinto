@@ -149,17 +149,19 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
     const { subscription } = context;
     const { limits } = subscription;
 
-    const filteredNavItems = navItems.filter(item => {
+    const filteredNavItems = navItems.filter((item) => {
         // POS System check
         if (item.href === "/pos" && !limits.pos_system) return false;
         return true;
     });
 
-    const filteredSettingsItems = settingsItems.filter(item => {
+    const filteredSettingsItems = settingsItems.filter((item) => {
         // Developer API check
-        if (item.href === "/settings/api" && !limits.developer_api) return false;
+        if (item.href === "/settings/api" && !limits.developer_api)
+            return false;
         // Tracking check
-        if (item.href === "/settings/tracking" && !limits.marketing_pixels) return false;
+        if (item.href === "/settings/tracking" && !limits.marketing_pixels)
+            return false;
         return true;
     });
 
@@ -167,7 +169,7 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
         <Sidebar variant="inset">
             <SidebarHeader>
                 <div className="flex items-center gap-2 px-2 py-1">
-                    {/* Nishchinto logo mark */}
+                    {/* Mohajon logo mark */}
                     <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
                         ন
                     </div>
@@ -216,7 +218,9 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton
                                         asChild
-                                        isActive={pathname.startsWith(item.href)}
+                                        isActive={pathname.startsWith(
+                                            item.href
+                                        )}
                                     >
                                         <Link href={item.href}>
                                             <item.icon size={18} />

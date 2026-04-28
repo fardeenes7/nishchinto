@@ -10,25 +10,25 @@ interface EditProductPageProps {
 }
 
 export async function generateMetadata({
-    params,
+    params
 }: EditProductPageProps): Promise<Metadata> {
     const activeShop = await requireActiveShopContext();
     const { id } = await params;
     const res = await getProduct(activeShop.shopId, id);
-    if (!res.success) return { title: "Edit Product | Nishchinto Dashboard" };
+    if (!res.success) return { title: "Edit Product | Mohajon Dashboard" };
     return {
-        title: `Edit: ${res.data.name} | Nishchinto Dashboard`,
+        title: `Edit: ${res.data.name} | Mohajon Dashboard`
     };
 }
 
 export default async function EditProductPage({
-    params,
+    params
 }: EditProductPageProps) {
     const activeShop = await requireActiveShopContext();
     const { id } = await params;
     const [productRes, categoriesRes] = await Promise.all([
         getProduct(activeShop.shopId, id),
-        getCategories(activeShop.shopId),
+        getCategories(activeShop.shopId)
     ]);
 
     if (!productRes.success) notFound();
