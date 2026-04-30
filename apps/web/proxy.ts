@@ -5,31 +5,35 @@ const defaultLocale = "bn";
 const locales = ["bn", "en"];
 
 export function proxy(request: NextRequest) {
-    // Check if there is any supported locale in the pathname
     const { pathname } = request.nextUrl;
-
-    // Skip next internal paths and static assets
-    if (pathname.startsWith("/_next") || pathname.includes(".")) {
-        return NextResponse.next();
-    }
 
     const pathnameHasLocale = locales.some(
         (locale) =>
             pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     );
 
-    if (pathnameHasLocale) return NextResponse.next();
+    // If it has a locale, check if it's the default one
+    if (pathnameHasLocale) {
+        // If it's the default locale (bn), redirect to the clean URL
+        if (
+            pathname.startsWith(`/${defaultLocale}/`) ||
+            pathname === `/${defaultLocale}`
+        ) {
+            const newPath = pathname.replace(`/${defaultLocale}`, "") || "/";
+            return NextResponse.redirect(new URL(newPath, request.url));
+        }
+        return NextResponse.next();
+    }
 
-    // Redirect if there is no locale
-    request.nextUrl.pathname = `/${defaultLocale}${pathname}`;
-    // e.g. incoming request is /about
-    // The new URL is now /bn/about
-    return NextResponse.redirect(request.nextUrl);
+    // Rewrite to default locale internally (URL stays clean)
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname}`;
+    return NextResponse.rewrite(url);
 }
 
 export const config = {
     matcher: [
         // Skip all internal paths (_next)
-        "/((?!_next).*)"
+        "/((?!_next|api|favicon.ico).*)"
     ]
 };

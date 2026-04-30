@@ -5,26 +5,43 @@
         "waitlist": "Join Waitlist"
     },
     "hero": {
-        "title": "Build Your Digital Empire, Stress-Free.",
-        "subtitle": "The most secure, scalable SaaS engine designed for local merchants in Bangladesh. Launch your storefront, manage social orders, and grow your business with Nishchinte.",
-        "cta": "Start Your Journey",
-        "tagline": "ব্যবসা হোক নিশ্চিন্তে"
+        "title": "The engine for e-commerce in Bangladesh",
+        "subtitle": "Create a store, post to Facebook, handle customer orders, and run AI chatbots — without leaving one dashboard.",
+        "cta_primary": "Start Free Today",
+        "cta_secondary": "Request Demo",
+        "tagline": "ব্যবসা হোক নিশ্চিন্তে",
+        "trust_badge": "Trusted by 500+ sellers in Bangladesh"
     },
     "features": {
         "title": "Everything you need to grow",
         "subtitle": "From social media integration to automated inventory, we handle the complexity so you can focus on sales.",
-        "items": [
+        "detailed": [
             {
-                "title": "Smart Storefronts",
-                "description": "Auto-generate beautiful, SEO-optimized stores that work perfectly on mobile and desktop."
+                "title": "One Place for All Channels",
+                "description": "All your orders — website, Facebook, Instagram, WhatsApp — in a single, real-time inbox. No more context switching.",
+                "bullets": [
+                    "Unified inbox for all channels",
+                    "Auto-sync from Facebook/Instagram",
+                    "One-click order fulfillment"
+                ]
             },
             {
-                "title": "Social Sync",
-                "description": "Connect your Facebook and Instagram pages. Sync products and manage orders in one place."
+                "title": "AI Chatbot Handles Support",
+                "description": "Deploy an AI that understands Bengali, searches your catalog, creates orders, and handles payments — on Messenger, 24/7.",
+                "bullets": [
+                    "24/7 AI customer support",
+                    "Automatic order creation",
+                    "Payment links + COD support"
+                ]
             },
             {
-                "title": "AI-Powered Growth",
-                "description": "Leverage AI to write product descriptions, optimize ads, and engage with customers."
+                "title": "Real Profit Visibility",
+                "description": "See exactly how much you earned per order, after shipping costs, refunds, and fees. Know your repeat customers.",
+                "bullets": [
+                    "Double-entry accounting",
+                    "Per-order profit breakdown",
+                    "Customer cohort analysis"
+                ]
             }
         ]
     },
@@ -37,7 +54,104 @@
         "subtitle": "Join our exclusive beta program and be among the first to launch your store."
     },
     "footer": {
-        "powered": "Powered by Mohajon",
-        "all_rights": "All rights reserved."
+        "description": "Empowering businesses with innovative solutions. Launch your high-performance online store instantly.",
+        "sitemap": "Sitemap",
+        "other_pages": "Other Pages",
+        "contact_details": "Contact Details",
+        "all_rights": "All rights reserved.",
+        "contact_us": "Contact us",
+        "about_us": "About us",
+        "pricing": "Pricing",
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy"
+    },
+    "pricing": {
+        "title": "Built for every stage of growth",
+        "subtitle": "Start for free and scale with Mohajon as your business grows.",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "save_percent": "Save 20%",
+        "cta": "Get Started",
+        "cta_contact": "Contact Sales",
+        "tiers": {
+            "starter": {
+                "name": "Starter",
+                "price": "0",
+                "description": "For individual sellers just getting started.",
+                "features": ["1 Storefront", "5 Active Products", "Basic Analytics", "Standard Support"]
+            },
+            "basic": {
+                "name": "Basic",
+                "price": "990",
+                "description": "For small businesses looking to grow.",
+                "features": ["3 Storefronts", "50 Active Products", "Custom Domains", "Social Media Sync", "Priority Support"]
+            },
+            "pro": {
+                "name": "Pro",
+                "price": "1990",
+                "description": "For established merchants scaling fast.",
+                "features": ["Unlimited Storefronts", "Unlimited Products", "AI Chatbot Plus", "Advanced Analytics", "Inventory Automation", "24/7 Priority Support"]
+            },
+            "business": {
+                "name": "Business",
+                "price": "4990",
+                "description": "For large operations and enterprises.",
+                "features": ["Everything in Pro", "Developer API Access", "B2B Store Credit", "Custom Integrations", "Dedicated Account Manager"]
+            }
+        }
+    },
+    "services": {
+        "badge": "Why Mohajon?",
+        "title": "Built for scale",
+        "subtitle": "Everything you need to automate your social commerce business, from smart AI chatbots to precise accounting and real-time social sync.",
+        "cta": "Start Free Today",
+        "items": [
+            {
+                "heading": "Omnichannel Inbox",
+                "descp": "All your orders — website, Facebook, Instagram, WhatsApp — in a single, real-time inbox. No more context switching.",
+                "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                "heading": "AI Messenger Agent",
+                "descp": "Deploy an AI that understands Bengali, searches your catalog, creates orders, and handles payments — 24/7.",
+                "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                "heading": "Real Profit Visibility",
+                "descp": "See exactly how much you earned per order, after shipping costs, refunds, and fees with double-entry accounting.",
+                "image": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                "heading": "Automated Social Sync",
+                "descp": "Auto-sync catalogs and prepend 'OUT OF STOCK' on Facebook posts when inventory hits zero, completely hands-free.",
+                "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600"
+            }
+        ]
+    },
+    "faq": {
+        "badge": "FAQs",
+        "title": "Got questions? We’ve got answers ready",
+        "items": [
+            {
+                "question": "What exactly is Mohajon?",
+                "answer": "Mohajon is a comprehensive SaaS platform that helps F-commerce and E-commerce sellers manage their storefronts, Facebook & Instagram orders, inventory, and accounting all from a single unified dashboard."
+            },
+            {
+                "question": "Do I need coding skills to create my storefront?",
+                "answer": "Not at all! Mohajon auto-generates a fully functional, mobile-responsive storefront for you. You don't need any technical knowledge to get started, and you can map your own custom domain easily."
+            },
+            {
+                "question": "How does the AI Messenger Chatbot work?",
+                "answer": "Our AI agent connects directly to your Facebook page. It can reply to comments, search your product catalog, answer customer questions in Bengali, prepare draft orders, and even send invoice payment links—running 24/7."
+            },
+            {
+                "question": "Is Mohajon suitable if I only sell on Facebook?",
+                "answer": "Absolutely. We have deep integration with Facebook. You can manage all your Messenger chats, auto-sync products to your Facebook Catalog, and process orders without ever needing a traditional website if you don't want one."
+            },
+            {
+                "question": "How does pricing and payment work?",
+                "answer": "We offer multiple tiers starting with a Free plan. As your business grows, you can upgrade to unlock advanced features like AI chatbots, custom domains, and lower transaction fees. We integrate with local gateways like bKash and Steadfast for logistics."
+            }
+        ]
     }
 }
