@@ -166,8 +166,8 @@ export function AppSidebar({ context }: { context: DashboardShopContext }) {
     });
 
     return (
-        <Sidebar variant="inset">
-            <SidebarHeader>
+        <Sidebar variant="sidebar">
+            <SidebarHeader className="h-header border-b">
                 <div className="flex items-center gap-2 px-2 py-1">
                     {/* Mohajon logo mark */}
                     <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">

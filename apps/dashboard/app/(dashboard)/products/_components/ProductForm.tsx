@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
 import { IconDeviceFloppy, IconLoader2 } from "@tabler/icons-react";
+import { SidebarTrigger } from "@repo/ui/components/ui/sidebar";
+import { Separator } from "@repo/ui/components/ui/separator";
 import {
     Card,
     CardContent,
@@ -226,48 +228,35 @@ export function ProductForm({
             className="flex flex-col gap-6 pb-20"
         >
             {/* ── Header bar ──────────────────────────────────────────── */}
-            <div className="flex items-center justify-between sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 py-4 border-b -mx-6 px-6">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
-                        {mode === "create"
-                            ? "New Product"
-                            : watchedName || "Edit Product"}
-                    </h1>
-                    {initialData && (
-                        <div className="flex items-center gap-2 mt-1">
-                            <Badge
-                                variant="outline"
-                                className="font-mono text-xs"
-                            >
-                                ID: {initialData.id.split("-")[0]}...
-                            </Badge>
-                            {initialData.sku && (
+            <div className="h-header flex items-center justify-between sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 py-3 border-b -mx-6 px-6 -mt-6 mb-2">
+                <div className="flex items-center gap-4">
+                    <SidebarTrigger className="-ml-2" />
+                    <Separator orientation="vertical" className="h-6" />
+                    <div>
+                        <h1 className="text-xl font-bold tracking-tight">
+                            {mode === "create"
+                                ? "New Product"
+                                : watchedName || "Edit Product"}
+                        </h1>
+                        {initialData && (
+                            <div className="flex items-center gap-2 mt-0.5">
                                 <Badge
-                                    variant="secondary"
-                                    className="font-mono text-xs"
+                                    variant="outline"
+                                    className="font-mono text-[10px] h-4 px-1 opacity-70"
                                 >
-                                    SKU: {initialData.sku}
+                                    ID: {initialData.id.split("-")[0]}...
                                 </Badge>
-                            )}
-                        </div>
-                    )}
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        type="submit"
-                        id="save-product-btn"
-                        size="lg"
-                        variant={isDirty ? "default" : "secondary"}
-                        disabled={isSubmitting}
-                        className="shadow-sm"
-                    >
-                        {isSubmitting ? (
-                            <IconLoader2 className="size-4 animate-spin mr-2" />
-                        ) : (
-                            <IconDeviceFloppy className="size-4 mr-2" />
+                                {initialData.sku && (
+                                    <Badge
+                                        variant="secondary"
+                                        className="font-mono text-[10px] h-4 px-1 opacity-70"
+                                    >
+                                        SKU: {initialData.sku}
+                                    </Badge>
+                                )}
+                            </div>
                         )}
-                        {mode === "create" ? "Create Product" : "Save Changes"}
-                    </Button>
+                    </div>
                 </div>
             </div>
 
@@ -1011,6 +1000,43 @@ export function ProductForm({
                             )}
                         </CardContent>
                     </Card>
+                </div>
+            </div>
+
+            {/* ── Sticky Footer Actions ────────────────────────────────── */}
+            <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t p-4 flex items-center justify-between shadow-[0_-4px_12px_rgba(0,0,0,0.05)] -mx-6 px-6 -mb-6 mt-10">
+                <div className="flex items-center gap-2">
+                    {isDirty && (
+                        <Badge
+                            variant="outline"
+                            className="animate-pulse bg-amber-50 text-amber-700 border-amber-200 gap-1 hidden sm:flex"
+                        >
+                            <span className="size-1.5 rounded-full bg-amber-500" />
+                            Unsaved Changes
+                        </Badge>
+                    )}
+                </div>
+                <div className="flex items-center gap-3">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => router.back()}
+                        className="text-muted-foreground hover:text-foreground"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="min-w-[140px] shadow-lg shadow-primary/20"
+                    >
+                        {isSubmitting ? (
+                            <IconLoader2 className="size-4 animate-spin mr-2" />
+                        ) : (
+                            <IconDeviceFloppy className="size-4 mr-2" />
+                        )}
+                        {mode === "create" ? "Create Product" : "Save Changes"}
+                    </Button>
                 </div>
             </div>
         </form>
