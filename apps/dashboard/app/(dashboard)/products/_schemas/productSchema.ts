@@ -37,7 +37,20 @@ export const productSchema = z.object({
   seo_title: z.string().max(120).default(""),
   seo_description: z.string().max(320).default(""),
   sort_order: z.number().int().nonnegative().default(0),
-});
+  stock_quantity: z.number().int().nonnegative().default(0),
+}).refine(
+  (data) => {
+    if (!data.compare_at_price || data.compare_at_price === "") return true;
+    const comparePrice = parseFloat(data.compare_at_price);
+    const basePrice = parseFloat(data.base_price);
+    if (isNaN(comparePrice) || isNaN(basePrice)) return true;
+    return comparePrice > basePrice;
+  },
+  {
+    message: "Compare at price must be greater than base price",
+    path: ["compare_at_price"],
+  },
+);
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 

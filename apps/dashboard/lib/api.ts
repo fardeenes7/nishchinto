@@ -6,7 +6,6 @@
  */
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { fetcher, type ApiResponse } from "@repo/api";
 import { auth } from "@/auth";
@@ -144,6 +143,24 @@ export async function createVariant(
         `/api/v1/catalog/products/${productId}/variants/`,
         {
             method: "POST",
+            body: data,
+            headers: { "X-Tenant-ID": shopId }
+        }
+    );
+    if (res.success) revalidatePath(`/products/${productId}`);
+    return res;
+}
+
+export async function updateVariant(
+    shopId: string,
+    productId: string,
+    variantId: string,
+    data: any
+) {
+    const res = await authFetcher(
+        `/api/v1/catalog/products/${productId}/variants/${variantId}/`,
+        {
+            method: "PATCH",
             body: data,
             headers: { "X-Tenant-ID": shopId }
         }
