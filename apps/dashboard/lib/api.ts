@@ -74,6 +74,23 @@ export async function updateCategory(
     return res;
 }
 
+// ─── Media API ───────────────────────────────────────────────────────────────
+
+export async function getMedia(
+    shopId: string,
+    params?: { page?: number; page_size?: number; search?: string }
+) {
+    const query = new URLSearchParams();
+    if (params?.page) query.append("page", params.page.toString());
+    if (params?.page_size) query.append("page_size", params.page_size.toString());
+    if (params?.search) query.append("search", params.search);
+
+    const queryString = query.toString() ? `?${query.toString()}` : "";
+    return authFetcher(`/api/v1/media/${queryString}`, {
+        headers: { "X-Tenant-ID": shopId }
+    });
+}
+
 export async function deleteCategory(shopId: string, categoryId: string) {
     const res = await authFetcher(`/api/v1/catalog/categories/${categoryId}/`, {
         method: "DELETE",
