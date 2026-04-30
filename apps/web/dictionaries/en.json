@@ -153,5 +153,10 @@
                 "answer": "We offer multiple tiers starting with a Free plan. As your business grows, you can upgrade to unlock advanced features like AI chatbots, custom domains, and lower transaction fees. We integrate with local gateways like bKash and Steadfast for logistics."
             }
         ]
+    },
+    "cta": {
+        "title": "Innovative solutions for bold brands",
+        "description": "Looking to elevate your brand? We craft immersive experiences that captivate, engage, and make your business unforgettable in every interaction.",
+        "button": "Let's craft together"
     }
 }

@@ -13,6 +13,7 @@ import { PricingTeaser } from "./PricingTeaser";
 import { Logo } from "@repo/ui/components/Logo";
 import WhyWeAreDifferent from "./why-we-are-different";
 import Faq from "@/components/faq";
+import CTA from "@/components/cta";
 
 const dictionaries = { en, bn };
 
@@ -46,8 +47,7 @@ export default async function LandingPage({
 
             <Faq dict={dict} />
 
-            {/* Waitlist Section */}
-            <Waitlist dict={dict} />
+            <CTA dict={dict} />
         </main>
     );
 }

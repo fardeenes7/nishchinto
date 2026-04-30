@@ -1,6 +1,6 @@
 import "@repo/ui/globals.css";
 import { Metadata } from "next";
-import { Inter, Baloo_Da_2, Hind_Siliguri } from "next/font/google";
+import { Hind_Siliguri, Outfit } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Footer from "./footer";
 import en from "@/dictionaries/en.json";
@@ -9,8 +9,7 @@ import Header from "./header";
 
 const dictionaries = { en, bn };
 
-const inter = Inter({ subsets: ["latin"] });
-const baloo = Baloo_Da_2({});
+const outfit = Outfit({ subsets: ["latin"] });
 const hind = Hind_Siliguri({
     weight: "400"
 });
@@ -48,7 +47,9 @@ export default async function RootLayout({
     return (
         <html lang={lang} suppressHydrationWarning>
             {gtmId && <GoogleTagManager gtmId={gtmId} />}
-            <body className={`${hind.className} ${inter.className}`}>
+            <body
+                className={`${lang == "bn" ? hind.className : outfit.className}`}
+            >
                 <Header dict={dict} lang={lang} />
                 {children}
                 <Footer dict={dict} lang={lang} />

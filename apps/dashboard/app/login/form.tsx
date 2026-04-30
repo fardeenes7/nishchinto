@@ -84,14 +84,14 @@ export default function LoginForm() {
 
     return (
         <form className={"flex flex-col gap-6"}>
-            <div className="flex flex-col items-start gap-1">
+            <div className="flex flex-col items-center gap-1">
                 <h1 className="text-2xl font-bold">Welcome Back</h1>
                 <p className="text-sm text-balance text-muted-foreground">
                     Sign in to your mohajon dashboard.
                 </p>
             </div>
 
-            <Field>
+            <Field className="gap-6">
                 <Button
                     variant="outline"
                     type="button"
@@ -115,25 +115,21 @@ export default function LoginForm() {
                     {loading ? "Signing you in…" : "Continue with Google"}
                 </Button>
                 <FieldDescription className="text-center">
-                    <div className="">
-                        <p>
-                            By continuing, you agree to our{" "}
-                            <a
-                                href="https://www.mohajon.io/terms-of-service"
-                                aria-label="Terms of Service"
-                            >
-                                Terms of Service
-                            </a>{" "}
-                            and{" "}
-                            <a
-                                href="https://www.mohajon.io/privacy-policy"
-                                aria-label="Privacy Policy"
-                            >
-                                Privacy Policy
-                            </a>
-                            .
-                        </p>
-                    </div>
+                    By continuing, you agree to our{" "}
+                    <a
+                        href="https://www.mohajon.io/terms-of-service"
+                        aria-label="Terms of Service"
+                    >
+                        Terms of Service
+                    </a>{" "}
+                    and{" "}
+                    <a
+                        href="https://www.mohajon.io/privacy-policy"
+                        aria-label="Privacy Policy"
+                    >
+                        Privacy Policy
+                    </a>
+                    .
                 </FieldDescription>
             </Field>
         </form>
