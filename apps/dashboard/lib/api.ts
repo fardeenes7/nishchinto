@@ -228,11 +228,22 @@ export async function confirmUpload(
     originalFilename: string,
     shopId: string
 ) {
-    return authFetcher("/api/v1/media/confirm/", {
+    const res = await authFetcher("/api/v1/media/confirm/", {
         method: "POST",
         body: { s3_key: s3Key, original_filename: originalFilename },
         headers: { "X-Tenant-ID": shopId }
     });
+    if (res.success) revalidatePath("/media");
+    return res;
+}
+
+export async function deleteMedia(shopId: string, mediaId: string) {
+    const res = await authFetcher(`/api/v1/media/${mediaId}/`, {
+        method: "DELETE",
+        headers: { "X-Tenant-ID": shopId }
+    });
+    if (res.success) revalidatePath("/media");
+    return res;
 }
 
 // ─── Social API ──────────────────────────────────────────────────────────────

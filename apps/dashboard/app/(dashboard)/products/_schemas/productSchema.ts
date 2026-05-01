@@ -38,6 +38,7 @@ export const productSchema = z.object({
   seo_description: z.string().max(320).default(""),
   sort_order: z.number().int().nonnegative().default(0),
   stock_quantity: z.number().int().nonnegative().default(0),
+  media_ids: z.array(z.string().uuid()).default([]),
 }).refine(
   (data) => {
     if (!data.compare_at_price || data.compare_at_price === "") return true;

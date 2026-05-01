@@ -12,6 +12,7 @@ export interface MediaBrief {
   width: number | null;
   height: number | null;
   processing_status: "PENDING" | "PROCESSING" | "DONE" | "FAILED";
+  original_filename: string;
 }
 
 export interface Category {

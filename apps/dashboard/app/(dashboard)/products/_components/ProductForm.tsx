@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
@@ -73,7 +73,6 @@ export function ProductForm({
 }: ProductFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [mediaIds, setMediaIds] = useState<string[]>([]);
     const [variantRows, setVariantRows] = useState<unknown[]>([]);
 
     const {
@@ -103,7 +102,8 @@ export function ProductForm({
                   sort_order: initialData.sort_order,
                   publish_at: initialData.publish_at ?? null,
                   specifications: initialData.specifications ?? {},
-                  stock_quantity: initialData.variants?.[0]?.stock_quantity ?? 0
+                  stock_quantity: initialData.variants?.[0]?.stock_quantity ?? 0,
+                  media_ids: initialData.product_media?.map((pm) => pm.media.id) ?? []
               }
             : {
                   name: "",
@@ -117,7 +117,8 @@ export function ProductForm({
                   seo_description: "",
                   sort_order: 0,
                   publish_at: null,
-                  stock_quantity: 0
+                  stock_quantity: 0,
+                  media_ids: []
               }
     });
 
@@ -140,10 +141,7 @@ export function ProductForm({
         try {
             let result;
             if (mode === "create") {
-                result = await createProduct(shopId, {
-                    ...formData,
-                    media_ids: mediaIds
-                });
+                result = await createProduct(shopId, formData);
 
                 if (result.success) {
                     const product = result.data;
@@ -389,10 +387,8 @@ export function ProductForm({
                                             shopId={shopId}
                                             productName={watchedName}
                                             onImageGenerated={(mediaId) => {
-                                                setMediaIds((prev) => [
-                                                    ...prev,
-                                                    mediaId
-                                                ]);
+                                                const currentIds = watch("media_ids") || [];
+                                                setValue("media_ids", [...currentIds, mediaId], { shouldDirty: true });
                                             }}
                                         />
                                     </div>
@@ -400,8 +396,14 @@ export function ProductForm({
                                 <CardContent>
                                     <ImageUploader
                                         shopId={shopId}
-                                        value={mediaIds}
-                                        onChange={setMediaIds}
+                                        value={watch("media_ids") || []}
+                                        initialImages={initialData?.product_media?.map((pm) => ({
+                                            id: pm.media.id,
+                                            cdnUrl: pm.media.cdn_url,
+                                            filename: pm.media.original_filename || "image",
+                                            status: "done" as const
+                                        }))}
+                                        onChange={(ids) => setValue("media_ids", ids, { shouldDirty: true })}
                                         maxImages={10}
                                     />
                                 </CardContent>

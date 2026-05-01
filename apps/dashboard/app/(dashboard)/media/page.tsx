@@ -4,6 +4,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
 import { Plus, Search, Filter } from "lucide-react";
 import { MediaGrid } from "./_components/MediaGrid";
+import { UploadMediaDialog } from "./_components/UploadMediaDialog";
 import { DynamicPagination } from "@/components/DynamicPagination";
 
 export default async function MediaPage({
@@ -29,18 +30,15 @@ export default async function MediaPage({
     const numPages = result.success && result.data ? result.data.num_pages || Math.ceil(count / 18) || 1 : 1;
 
     return (
-        <div className="container mx-auto p-4 md:p-6 lg:p-8 max-w-7xl space-y-6">
+        <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Media Library</h1>
                     <p className="text-muted-foreground mt-1">
-                        Manage all your uploaded images, videos, and files in one place.
+                        Manage all your uploaded images and files in one place.
                     </p>
                 </div>
-                <Button className="gap-2 shrink-0">
-                    <Plus size={16} />
-                    Upload Media
-                </Button>
+                <UploadMediaDialog shopId={activeShop.shopId} />
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-card p-4 rounded-xl border shadow-xs">

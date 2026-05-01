@@ -1,14 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { toast } from "sonner";
 import {
-  IconUpload,
+  IconPlus,
   IconX,
   IconGripVertical,
-  IconPhoto,
 } from "@tabler/icons-react";
 import {
   DndContext,
@@ -23,15 +20,15 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@repo/ui/components/ui/button";
-import { Spinner } from "@repo/ui/components/ui/spinner";
-import { cn } from "@repo/ui/lib/utils";
 import {
-  getPresignedUploadUrl,
-  confirmUpload,
-} from "@/lib/api";
-import { uploadFileToS3 } from "@/lib/upload";
-import type { MediaRecord } from "@repo/api";
-
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@repo/ui/components/ui/dialog";
+import { MediaUploader } from "@/components/MediaUploader";
 
 interface UploadedImage {
   id: string;
@@ -43,6 +40,7 @@ interface UploadedImage {
 interface ImageUploaderProps {
   shopId: string;
   value: string[]; // media IDs
+  initialImages?: UploadedImage[];
   onChange: (ids: string[]) => void;
   maxImages?: number;
 }
@@ -66,42 +64,39 @@ function SortableImage({
     <div
       ref={setNodeRef}
       style={style}
-      className="relative size-24 rounded-lg border overflow-hidden group"
+      className="relative size-32 rounded-lg border overflow-hidden group bg-muted/30"
     >
-      {image.status === "uploading" || image.status === "processing" ? (
-        <div className="size-full flex items-center justify-center bg-muted">
-          <Spinner className="size-5" />
-        </div>
-      ) : image.status === "error" ? (
-        <div className="size-full flex items-center justify-center bg-destructive/10">
-          <span className="text-xs text-destructive">Error</span>
-        </div>
-      ) : (
-        <Image
-          src={image.cdnUrl}
-          alt={image.filename}
-          fill
-          className="object-cover"
-        />
-      )}
+      <Image
+        src={image.cdnUrl}
+        alt={image.filename}
+        fill
+        className="object-cover"
+      />
 
       {/* Drag handle */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-1 left-1 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded p-0.5"
+        className="absolute top-1 left-1 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded p-1"
       >
-        <IconGripVertical className="size-3 text-white" />
+        <IconGripVertical className="size-4 text-white" />
       </div>
 
       {/* Remove button */}
       <button
         type="button"
         onClick={() => onRemove(image.id)}
-        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-full p-0.5 text-white hover:bg-destructive"
+        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-full p-1 text-white hover:bg-destructive"
       >
-        <IconX className="size-3" />
+        <IconX className="size-4" />
       </button>
+
+      {/* Primary indicator */}
+      <div className="absolute bottom-1 left-1 pointer-events-none">
+          <div className="bg-black/60 backdrop-blur-sm text-[10px] text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider opacity-0 group-first:opacity-100 transition-opacity">
+              Primary
+          </div>
+      </div>
     </div>
   );
 }
@@ -109,120 +104,40 @@ function SortableImage({
 export function ImageUploader({
   shopId,
   value,
+  initialImages,
   onChange,
   maxImages = 10,
 }: ImageUploaderProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
-  const processFile = async (file: File) => {
-    const tempId = `temp-${Date.now()}-${Math.random()}`;
-    const previewUrl = URL.createObjectURL(file);
-
-    setUploadedImages((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        cdnUrl: previewUrl,
-        filename: file.name,
-        status: "uploading",
-      },
-    ]);
-
-    try {
-      // Step 1: Get presigned URL
-      const urlRes = await getPresignedUploadUrl(
-        file.name,
-        file.type,
-        shopId,
-      );
-      if (!urlRes.success) throw new Error(urlRes.error);
-
-      const { upload_url, s3_key } = urlRes.data;
-
-      // Step 2: Upload directly to S3/MinIO
-      const uploadRes = await uploadFileToS3(upload_url, file);
-      if (!uploadRes.ok) throw new Error("Upload to storage failed");
-
-      // Step 3: Confirm upload (triggers WebP conversion)
-      const confirmRes = await confirmUpload(s3_key, file.name, shopId);
-      if (!confirmRes.success) throw new Error(confirmRes.error);
-
-      const media = confirmRes.data;
-
-      // Update the temp entry with real media data
-      setUploadedImages((prev) =>
-        prev.map((img) =>
-          img.id === tempId
-            ? {
-                id: media.id,
-                cdnUrl: media.cdn_url || previewUrl,
-                filename: file.name,
-                status: "processing",
-              }
-            : img,
-        ),
-      );
-
-      // Add the real media ID to the form value
-      onChange([...value, media.id]);
-
-      // Poll for WebP completion (simple polling, 5s intervals, max 30s)
-      let attempts = 0;
-      const pollInterval = setInterval(async () => {
-        attempts++;
-        if (attempts >= 6) {
-          clearInterval(pollInterval);
-          setUploadedImages((prev) =>
-            prev.map((img) =>
-              img.id === media.id ? { ...img, status: "done" } : img,
-            ),
-          );
-          return;
-        }
-        // In production, we'd poll GET /api/v1/media/{id}/
-        // For now, just mark done after first interval
-        clearInterval(pollInterval);
-        setUploadedImages((prev) =>
-          prev.map((img) =>
-            img.id === media.id ? { ...img, status: "done" } : img,
-          ),
-        );
-      }, 3000);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Upload failed";
-      toast.error(message);
-      setUploadedImages((prev) =>
-        prev.map((img) =>
-          img.id === tempId ? { ...img, status: "error" } : img,
-        ),
-      );
+  // Initialize once on mount or when initialImages becomes available
+  useEffect(() => {
+    if (initialImages && !hasInitialized) {
+      setUploadedImages(initialImages);
+      setHasInitialized(true);
     }
+  }, [initialImages, hasInitialized]);
+
+  const handleUploadSuccess = (mediaArray: any[]) => {
+      const newImages: UploadedImage[] = mediaArray.map(m => ({
+          id: m.id,
+          cdnUrl: m.cdn_url,
+          filename: m.original_filename || "image",
+          status: "done"
+      }));
+
+      const updatedList = [...uploadedImages, ...newImages];
+      setUploadedImages(updatedList);
+      onChange(updatedList.map(img => img.id));
+      setIsDialogOpen(false);
   };
 
-  const onDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      if (uploadedImages.length + acceptedFiles.length > maxImages) {
-        toast.error(`You can upload a maximum of ${maxImages} images.`);
-        return;
-      }
-      setIsUploading(true);
-      await Promise.all(acceptedFiles.map(processFile));
-      setIsUploading(false);
-    },
-    [uploadedImages.length, maxImages],
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"] },
-    maxSize: 5 * 1024 * 1024, // 5 MB — matches backend rule
-    disabled: isUploading || uploadedImages.length >= maxImages,
-  });
-
   const handleRemove = (id: string) => {
-    setUploadedImages((prev) => prev.filter((img) => img.id !== id));
-    onChange(value.filter((v) => v !== id));
+    const updated = uploadedImages.filter((img) => img.id !== id);
+    setUploadedImages(updated);
+    onChange(updated.map((img) => img.id));
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -232,14 +147,13 @@ export function ImageUploader({
       const newIndex = uploadedImages.findIndex((img) => img.id === over.id);
       const newOrder = arrayMove(uploadedImages, oldIndex, newIndex);
       setUploadedImages(newOrder);
-      onChange(newOrder.map((img) => img.id).filter((id) => value.includes(id)));
+      onChange(newOrder.map((img) => img.id));
     }
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Preview grid */}
-      {uploadedImages.length > 0 && (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-4">
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
@@ -248,57 +162,50 @@ export function ImageUploader({
             items={uploadedImages.map((img) => img.id)}
             strategy={horizontalListSortingStrategy}
           >
-            <div className="flex flex-wrap gap-2">
-              {uploadedImages.map((image) => (
-                <SortableImage
-                  key={image.id}
-                  image={image}
-                  onRemove={handleRemove}
-                />
-              ))}
-            </div>
+            {uploadedImages.map((image) => (
+              <SortableImage
+                key={image.id}
+                image={image}
+                onRemove={handleRemove}
+              />
+            ))}
           </SortableContext>
         </DndContext>
-      )}
 
-      {/* Drop zone */}
-      {uploadedImages.length < maxImages && (
-        <div
-          {...getRootProps()}
-          className={cn(
-            "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center cursor-pointer transition-colors",
-            isDragActive
-              ? "border-primary bg-primary/5"
-              : "border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50",
-            isUploading && "opacity-50 cursor-not-allowed",
-          )}
-        >
-          <input {...getInputProps()} />
-          <div className="flex flex-col items-center gap-2">
-            {isUploading ? (
-              <Spinner className="size-8 text-muted-foreground" />
-            ) : (
-              <div className="rounded-full bg-muted p-3">
-                {isDragActive ? (
-                  <IconPhoto className="size-6 text-primary" />
-                ) : (
-                  <IconUpload className="size-6 text-muted-foreground" />
-                )}
-              </div>
-            )}
-            <div>
-              <p className="text-sm font-medium">
-                {isDragActive
-                  ? "Drop images here"
-                  : "Drag & drop or click to upload"}
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                JPG, PNG, GIF, WebP — max 5 MB each
-              </p>
-            </div>
-          </div>
-        </div>
+        {uploadedImages.length < maxImages && (
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                    <button
+                        type="button"
+                        className="flex flex-col items-center justify-center size-32 rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                        <div className="rounded-full bg-muted p-2 group-hover:bg-primary/10 transition-colors">
+                            <IconPlus className="size-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
+                        <span className="text-xs font-medium mt-2 text-muted-foreground group-hover:text-primary transition-colors">Add Image</span>
+                    </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-3xl">
+                    <DialogHeader>
+                        <DialogTitle>Upload Product Images</DialogTitle>
+                        <DialogDescription>
+                            Upload high-quality images of your product. First image will be the primary thumbnail.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <MediaUploader 
+                        shopId={shopId} 
+                        onUploadSuccess={handleUploadSuccess} 
+                        maxFiles={maxImages - uploadedImages.length}
+                    />
+                </DialogContent>
+            </Dialog>
+        )}
+      </div>
+
+      {uploadedImages.length === 0 && (
+          <p className="text-sm text-muted-foreground italic">No images added yet.</p>
       )}
     </div>
   );
 }
+

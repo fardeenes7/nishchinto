@@ -4,8 +4,19 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@repo/ui/components/ui/card";
 import { Button } from "@repo/ui/components/ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@repo/ui/components/ui/alert-dialog";
 import { Trash2, Download, Eye, Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { deleteMedia } from "@/lib/api";
 
 export function MediaGrid({
     initialItems,
@@ -14,37 +25,40 @@ export function MediaGrid({
     initialItems: any[];
     shopId: string;
 }) {
-    const [items, setItems] = useState(initialItems);
+    const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
+    const [mediaToDelete, setMediaToDelete] = useState<any | null>(null);
     const router = useRouter();
 
-    const handleDelete = async (id: string) => {
+    const visibleItems = initialItems.filter(item => !deletedIds.has(item.id));
+
+    const confirmDelete = async () => {
+        if (!mediaToDelete) return;
+        const id = mediaToDelete.id;
+        
         setIsDeleting(id);
         try {
-            const res = await fetch(`/api/proxy/media/${id}/`, {
-                method: "DELETE",
-                headers: { "X-Tenant-ID": shopId }
-            });
-            if (res.ok) {
+            const res = await deleteMedia(shopId, id);
+            if (res.success) {
                 toast.success("Media deleted successfully");
-                setItems((prev) => prev.filter((item) => item.id !== id));
+                setDeletedIds((prev) => new Set(prev).add(id));
                 router.refresh();
             } else {
-                const data = await res.json();
-                toast.error(data.detail || "Failed to delete media.");
+                toast.error(res.error || "Failed to delete media.");
             }
         } catch (error) {
             toast.error("Network error deleting media.");
         } finally {
             setIsDeleting(null);
+            setMediaToDelete(null);
         }
     };
 
     return (
         <div>
-            {items.length > 0 ? (
+            {visibleItems.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                    {items.map((item) => (
+                    {visibleItems.map((item) => (
                         <div
                             key={item.id}
                             className="group relative rounded-xl border bg-muted/30 overflow-hidden aspect-square flex flex-col"
@@ -90,7 +104,7 @@ export function MediaGrid({
                                             variant="destructive"
                                             className="h-9 w-9 rounded-full hover:scale-110 transition-transform"
                                             onClick={() =>
-                                                handleDelete(item.id)
+                                                setMediaToDelete(item)
                                             }
                                             disabled={isDeleting === item.id}
                                         >
@@ -139,6 +153,46 @@ export function MediaGrid({
                     </p>
                 </div>
             )}
+
+            <AlertDialog open={!!mediaToDelete} onOpenChange={(open) => !open && setMediaToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription asChild>
+                            <div className="space-y-4 mt-2">
+                                <p>This will permanently delete the media file <strong>{mediaToDelete?.original_filename}</strong>.</p>
+                                {mediaToDelete?.connected_products && mediaToDelete.connected_products.length > 0 && (
+                                    <div className="bg-destructive/10 text-destructive border border-destructive/20 rounded-md p-3 text-sm">
+                                        <p className="font-semibold mb-1">Warning: This media is connected to {mediaToDelete.connected_products.length} product(s).</p>
+                                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                                            {mediaToDelete.connected_products.slice(0, 3).map((p: any) => (
+                                                <li key={p.id} className="truncate">{p.name}</li>
+                                            ))}
+                                            {mediaToDelete.connected_products.length > 3 && (
+                                                <li>...and {mediaToDelete.connected_products.length - 3} more</li>
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={!!isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(e) => {
+                                e.preventDefault();
+                                confirmDelete();
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            disabled={!!isDeleting}
+                        >
+                            {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
