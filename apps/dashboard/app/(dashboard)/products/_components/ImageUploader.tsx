@@ -64,7 +64,7 @@ function SortableImage({
     <div
       ref={setNodeRef}
       style={style}
-      className="relative size-32 rounded-lg border overflow-hidden group bg-muted/30"
+      className="relative size-24 rounded-md border overflow-hidden group bg-muted/30 shadow-sm"
     >
       <Image
         src={image.cdnUrl}
@@ -79,7 +79,7 @@ function SortableImage({
         {...listeners}
         className="absolute top-1 left-1 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded p-1"
       >
-        <IconGripVertical className="size-4 text-white" />
+        <IconGripVertical className="size-3 text-white" />
       </div>
 
       {/* Remove button */}
@@ -88,12 +88,12 @@ function SortableImage({
         onClick={() => onRemove(image.id)}
         className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-full p-1 text-white hover:bg-destructive"
       >
-        <IconX className="size-4" />
+        <IconX className="size-3" />
       </button>
 
       {/* Primary indicator */}
       <div className="absolute bottom-1 left-1 pointer-events-none">
-          <div className="bg-black/60 backdrop-blur-sm text-[10px] text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider opacity-0 group-first:opacity-100 transition-opacity">
+          <div className="bg-primary/90 backdrop-blur-sm text-[8px] text-white px-1 py-0.5 rounded uppercase font-bold tracking-tighter opacity-0 group-first:opacity-100 transition-opacity">
               Primary
           </div>
       </div>
@@ -152,8 +152,8 @@ export function ImageUploader({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-3">
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
@@ -177,12 +177,12 @@ export function ImageUploader({
                 <DialogTrigger asChild>
                     <button
                         type="button"
-                        className="flex flex-col items-center justify-center size-32 rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                        className="flex flex-col items-center justify-center size-24 rounded-md border-2 border-dashed border-muted-foreground/20 hover:border-primary/40 hover:bg-primary/5 transition-all group"
                     >
-                        <div className="rounded-full bg-muted p-2 group-hover:bg-primary/10 transition-colors">
-                            <IconPlus className="size-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <div className="rounded-full bg-muted p-1.5 group-hover:bg-primary/10 transition-colors">
+                            <IconPlus className="size-5 text-muted-foreground group-hover:text-primary transition-colors" />
                         </div>
-                        <span className="text-xs font-medium mt-2 text-muted-foreground group-hover:text-primary transition-colors">Add Image</span>
+                        <span className="text-[10px] font-medium mt-1 text-muted-foreground group-hover:text-primary transition-colors">Add Image</span>
                     </button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-3xl">
