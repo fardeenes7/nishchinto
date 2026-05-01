@@ -21,7 +21,7 @@ export async function authFetcher<T = any>(
         body?: any;
         headers?: Record<string, string>;
         queryParams?: any;
-    } = {}
+    } = {},
 ): Promise<ApiResponse<T>> {
     const { method = "GET", body, headers = {}, queryParams } = options;
 
@@ -46,7 +46,7 @@ export async function getActiveShopContext() {
 
 export async function getCategories(shopId: string) {
     return authFetcher("/api/v1/catalog/categories/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -54,7 +54,7 @@ export async function createCategory(shopId: string, data: any) {
     const res = await authFetcher("/api/v1/catalog/categories/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/categories");
     return res;
@@ -63,12 +63,12 @@ export async function createCategory(shopId: string, data: any) {
 export async function updateCategory(
     shopId: string,
     categoryId: string,
-    data: any
+    data: any,
 ) {
     const res = await authFetcher(`/api/v1/catalog/categories/${categoryId}/`, {
         method: "PATCH",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/categories");
     return res;
@@ -78,23 +78,24 @@ export async function updateCategory(
 
 export async function getMedia(
     shopId: string,
-    params?: { page?: number; page_size?: number; search?: string }
+    params?: { page?: number; page_size?: number; search?: string },
 ) {
     const query = new URLSearchParams();
     if (params?.page) query.append("page", params.page.toString());
-    if (params?.page_size) query.append("page_size", params.page_size.toString());
+    if (params?.page_size)
+        query.append("page_size", params.page_size.toString());
     if (params?.search) query.append("search", params.search);
 
     const queryString = query.toString() ? `?${query.toString()}` : "";
     return authFetcher(`/api/v1/media/${queryString}`, {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function deleteCategory(shopId: string, categoryId: string) {
     const res = await authFetcher(`/api/v1/catalog/categories/${categoryId}/`, {
         method: "DELETE",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/categories");
     return res;
@@ -105,13 +106,13 @@ export async function deleteCategory(shopId: string, categoryId: string) {
 export async function getProducts(shopId: string, params?: any) {
     return authFetcher("/api/v1/catalog/products/", {
         headers: { "X-Tenant-ID": shopId },
-        queryParams: params
+        queryParams: params,
     });
 }
 
 export async function getProduct(shopId: string, productId: string) {
     return authFetcher(`/api/v1/catalog/products/${productId}/`, {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -119,7 +120,7 @@ export async function createProduct(shopId: string, data: any) {
     const res = await authFetcher("/api/v1/catalog/products/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/products");
     return res;
@@ -128,12 +129,12 @@ export async function createProduct(shopId: string, data: any) {
 export async function updateProduct(
     shopId: string,
     productId: string,
-    data: any
+    data: any,
 ) {
     const res = await authFetcher(`/api/v1/catalog/products/${productId}/`, {
         method: "PATCH",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) {
         revalidatePath("/products");
@@ -145,7 +146,7 @@ export async function updateProduct(
 export async function deleteProduct(shopId: string, productId: string) {
     const res = await authFetcher(`/api/v1/catalog/products/${productId}/`, {
         method: "DELETE",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/products");
     return res;
@@ -154,15 +155,15 @@ export async function deleteProduct(shopId: string, productId: string) {
 export async function createVariant(
     shopId: string,
     productId: string,
-    data: any
+    data: any,
 ) {
     const res = await authFetcher(
         `/api/v1/catalog/products/${productId}/variants/`,
         {
             method: "POST",
             body: data,
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
     if (res.success) revalidatePath(`/products/${productId}`);
     return res;
@@ -172,15 +173,15 @@ export async function updateVariant(
     shopId: string,
     productId: string,
     variantId: string,
-    data: any
+    data: any,
 ) {
     const res = await authFetcher(
         `/api/v1/catalog/products/${productId}/variants/${variantId}/`,
         {
             method: "PATCH",
             body: data,
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
     if (res.success) revalidatePath(`/products/${productId}`);
     return res;
@@ -191,8 +192,8 @@ export async function publishProduct(shopId: string, productId: string) {
         `/api/v1/catalog/products/${productId}/publish/`,
         {
             method: "POST",
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
     if (res.success) revalidatePath("/products");
     return res;
@@ -203,8 +204,8 @@ export async function archiveProduct(shopId: string, productId: string) {
         `/api/v1/catalog/products/${productId}/archive/`,
         {
             method: "POST",
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
     if (res.success) revalidatePath("/products");
     return res;
@@ -215,23 +216,23 @@ export async function archiveProduct(shopId: string, productId: string) {
 export async function getPresignedUploadUrl(
     filename: string,
     contentType: string,
-    shopId: string
+    shopId: string,
 ) {
     return authFetcher("/api/v1/media/upload-url/", {
         headers: { "X-Tenant-ID": shopId },
-        queryParams: { filename, content_type: contentType }
+        queryParams: { filename, content_type: contentType },
     });
 }
 
 export async function confirmUpload(
     s3Key: string,
     originalFilename: string,
-    shopId: string
+    shopId: string,
 ) {
     const res = await authFetcher("/api/v1/media/confirm/", {
         method: "POST",
         body: { s3_key: s3Key, original_filename: originalFilename },
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/media");
     return res;
@@ -240,7 +241,7 @@ export async function confirmUpload(
 export async function deleteMedia(shopId: string, mediaId: string) {
     const res = await authFetcher(`/api/v1/media/${mediaId}/`, {
         method: "DELETE",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/media");
     return res;
@@ -250,19 +251,19 @@ export async function deleteMedia(shopId: string, mediaId: string) {
 
 export async function getSocialConnections(shopId: string) {
     return authFetcher("/api/v1/marketing/social/connections/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function getProductSocialActivity(
     shopId: string,
-    productId: string
+    productId: string,
 ) {
     return authFetcher(
         `/api/v1/marketing/social/products/${productId}/activity/`,
         {
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
 }
 
@@ -270,27 +271,27 @@ export async function createSocialConnection(shopId: string, data: any) {
     return authFetcher("/api/v1/marketing/social/connections/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function disconnectSocialConnection(
     shopId: string,
-    connectionId: string
+    connectionId: string,
 ) {
     return authFetcher(
         `/api/v1/marketing/social/connections/${connectionId}/`,
         {
             method: "DELETE",
-            headers: { "X-Tenant-ID": shopId }
-        }
+            headers: { "X-Tenant-ID": shopId },
+        },
     );
 }
 
 export async function startSocialOAuth(shopId: string) {
     return authFetcher("/api/v1/marketing/social/oauth/start/", {
         method: "POST",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -298,7 +299,7 @@ export async function handleSocialOAuthCallback(shopId: string, data: any) {
     return authFetcher("/api/v1/marketing/social/oauth/callback/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -306,7 +307,7 @@ export async function publishProductToSocial(shopId: string, data: any) {
     return authFetcher("/api/v1/marketing/social/publish/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -315,7 +316,7 @@ export async function publishProductToSocial(shopId: string, data: any) {
 export async function updateTrackingConfig(shopId: string, data: any) {
     const res = await authFetcher(`/api/v1/shops/${shopId}/tracking/`, {
         method: "PATCH",
-        body: data
+        body: data,
     });
     if (res.success) revalidatePath("/settings/tracking");
     return res;
@@ -332,7 +333,7 @@ export async function getStoreTheme() {
 export async function updateStoreTheme(data: any) {
     const res = await authFetcher(`/api/v1/shops/theme/`, {
         method: "PATCH",
-        body: data
+        body: data,
     });
     if (res.success) revalidatePath("/builder");
     return res;
@@ -343,7 +344,7 @@ export async function updateStoreTheme(data: any) {
 export async function createShopAction(data: any) {
     const res = await authFetcher("/api/v1/shops/create/", {
         method: "POST",
-        body: data
+        body: data,
     });
 
     if (res.success) {
@@ -357,19 +358,43 @@ export async function createShopAction(data: any) {
 
 export async function getPaymentMethods(shopId: string) {
     return authFetcher("/api/v1/billing/methods/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
+}
+
+export async function getPaymentGateways(shopId: string) {
+    return authFetcher("/api/v1/billing/gateways/", {
+        headers: { "X-Tenant-ID": shopId },
+    });
+}
+
+export async function configurePaymentGateway(
+    shopId: string,
+    data: {
+        gateway: string;
+        credentials: Record<string, string>;
+        is_test_mode?: boolean;
+        label?: string;
+    },
+) {
+    const res = await authFetcher("/api/v1/billing/gateways/configure/", {
+        method: "POST",
+        body: data,
+        headers: { "X-Tenant-ID": shopId },
+    });
+    if (res.success) revalidatePath("/settings/payments");
+    return res;
 }
 
 export async function updatePaymentMethod(
     shopId: string,
     methodId: string,
-    data: any
+    data: any,
 ) {
     const res = await authFetcher(`/api/v1/billing/methods/${methodId}/`, {
         method: "PATCH",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) revalidatePath("/settings/payments");
     return res;
@@ -379,42 +404,42 @@ export async function updatePaymentMethod(
 
 export async function getApiTokens(shopId: string) {
     return authFetcher("/api/v1/billing/tokens/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function createApiToken(
     shopId: string,
-    data: { name: string; scopes: string[] }
+    data: { name: string; scopes: string[] },
 ) {
     return authFetcher("/api/v1/billing/tokens/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function revokeApiToken(shopId: string, tokenId: string) {
     return authFetcher(`/api/v1/billing/tokens/${tokenId}/`, {
         method: "DELETE",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function getWebhooks(shopId: string) {
     return authFetcher("/api/v1/billing/webhooks/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function registerWebhook(
     shopId: string,
-    data: { url: string; subscribed_events: string[] }
+    data: { url: string; subscribed_events: string[] },
 ) {
     return authFetcher("/api/v1/billing/webhooks/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -430,7 +455,7 @@ export async function claimShopAction(_prevState: any, formData: FormData) {
     const res = await fetcher("/api/v1/shops/claim/", "POST", {
         token,
         subdomain,
-        password
+        password,
     });
     return res;
 }
@@ -439,24 +464,24 @@ export async function claimShopAction(_prevState: any, formData: FormData) {
 
 export async function getSalesAnalytics(
     shopId: string,
-    params?: { start_date?: string; end_date?: string }
+    params?: { start_date?: string; end_date?: string },
 ) {
     return authFetcher("/api/v1/analytics/metrics/sales/", {
         headers: { "X-Tenant-ID": shopId },
-        queryParams: params
+        queryParams: params,
     });
 }
 
 export async function getTopCustomers(shopId: string, limit: number = 10) {
     return authFetcher("/api/v1/analytics/metrics/top_customers/", {
         headers: { "X-Tenant-ID": shopId },
-        queryParams: { limit }
+        queryParams: { limit },
     });
 }
 
 export async function getCohortAnalytics(shopId: string) {
     return authFetcher("/api/v1/analytics/metrics/cohorts/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -464,7 +489,7 @@ export async function getCohortAnalytics(shopId: string) {
 
 export async function getAffiliateStats(shopId: string) {
     return authFetcher("/api/v1/affiliates/stats/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 // ─── Order API ───────────────────────────────────────────────────────────────
@@ -472,25 +497,25 @@ export async function getAffiliateStats(shopId: string) {
 export async function getOrders(shopId: string, params?: any) {
     return authFetcher("/api/v1/orders/", {
         headers: { "X-Tenant-ID": shopId },
-        queryParams: params
+        queryParams: params,
     });
 }
 
 export async function getOrder(shopId: string, orderId: string) {
     return authFetcher(`/api/v1/orders/${orderId}/`, {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function transitionOrder(
     shopId: string,
     orderId: string,
-    data: { to_status: string; reason?: string }
+    data: { to_status: string; reason?: string },
 ) {
     const res = await authFetcher(`/api/v1/orders/${orderId}/transition/`, {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
     if (res.success) {
         revalidatePath("/orders");
@@ -503,19 +528,19 @@ export async function transitionOrder(
 
 export async function getMerchantBalance(shopId: string) {
     return authFetcher("/api/v1/accounting/balance/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function getMerchantPayouts(shopId: string) {
     return authFetcher("/api/v1/accounting/payouts/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function getMerchantLedger(shopId: string) {
     return authFetcher("/api/v1/accounting/ledger/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -523,7 +548,7 @@ export async function getMerchantLedger(shopId: string) {
 
 export async function getPurchaseOrders(shopId: string) {
     return authFetcher("/api/v1/accounting/purchase-orders/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -531,26 +556,26 @@ export async function createPurchaseOrder(shopId: string, data: any) {
     return authFetcher("/api/v1/accounting/purchase-orders/", {
         method: "POST",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function updatePurchaseOrder(
     shopId: string,
     poId: string,
-    data: any
+    data: any,
 ) {
     return authFetcher(`/api/v1/accounting/purchase-orders/${poId}/`, {
         method: "PATCH",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
 export async function deletePurchaseOrder(shopId: string, poId: string) {
     return authFetcher(`/api/v1/accounting/purchase-orders/${poId}/`, {
         method: "DELETE",
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -558,7 +583,7 @@ export async function deletePurchaseOrder(shopId: string, poId: string) {
 
 export async function getFraudConfig(shopId: string) {
     return authFetcher("/api/v1/fraud/config/", {
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -566,7 +591,7 @@ export async function updateFraudConfig(shopId: string, data: any) {
     return authFetcher("/api/v1/fraud/config/", {
         method: "PATCH",
         body: data,
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }
 
@@ -574,6 +599,6 @@ export async function checkCustomerRisk(shopId: string, phoneNumber: string) {
     return authFetcher("/api/v1/fraud/check_risk/", {
         method: "POST",
         body: { phone_number: phoneNumber },
-        headers: { "X-Tenant-ID": shopId }
+        headers: { "X-Tenant-ID": shopId },
     });
 }

@@ -1,25 +1,22 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { 
-    Card, 
-    CardContent 
-} from "@repo/ui/components/ui/card";
+import { Card, CardContent } from "@repo/ui/components/ui/card";
 import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
 import { Badge } from "@repo/ui/components/ui/badge";
-import { 
-    IconSearch, 
-    IconBarcode, 
-    IconShoppingCart, 
-    IconTrash, 
-    IconPlus, 
+import {
+    IconSearch,
+    IconBarcode,
+    IconShoppingCart,
+    IconTrash,
+    IconPlus,
     IconMinus,
     IconDeviceFloppy,
     IconUser,
     IconCreditCard,
     IconCash,
-    IconChevronRight
+    IconChevronRight,
 } from "@tabler/icons-react";
 import { Separator } from "@repo/ui/components/ui/separator";
 
@@ -50,30 +47,37 @@ export default function POSPage() {
     }, []);
 
     const addToCart = (item: POSItem) => {
-        setCart(prev => {
-            const existing = prev.find(i => i.id === item.id);
+        setCart((prev) => {
+            const existing = prev.find((i) => i.id === item.id);
             if (existing) {
-                return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+                return prev.map((i) =>
+                    i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+                );
             }
             return [...prev, { ...item, quantity: 1 }];
         });
     };
 
     const updateQuantity = (id: string, delta: number) => {
-        setCart(prev => prev.map(i => {
-            if (i.id === id) {
-                const newQty = Math.max(1, i.quantity + delta);
-                return { ...i, quantity: newQty };
-            }
-            return i;
-        }));
+        setCart((prev) =>
+            prev.map((i) => {
+                if (i.id === id) {
+                    const newQty = Math.max(1, i.quantity + delta);
+                    return { ...i, quantity: newQty };
+                }
+                return i;
+            }),
+        );
     };
 
     const removeFromCart = (id: string) => {
-        setCart(prev => prev.filter(i => i.id !== id));
+        setCart((prev) => prev.filter((i) => i.id !== id));
     };
 
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+    );
     const tax = subtotal * 0.05; // 5% VAT placeholder
     const total = subtotal + tax;
 
@@ -81,12 +85,12 @@ export default function POSPage() {
         <div className="flex h-screen bg-background">
             {/* Left Column: Product Discovery */}
             <div className="flex-1 flex flex-col border-r">
-                <header className="p-4 border-b flex items-center gap-4 bg-card/50">
+                <header className="h-header flex items-center px-4 border-b gap-4 bg-card/50">
                     <div className="relative flex-1">
                         <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input 
+                        <Input
                             ref={searchInputRef}
-                            placeholder="Search products or scan barcode (Ctrl+F)..." 
+                            placeholder="Search products or scan barcode (Ctrl+F)..."
                             className="pl-10 h-11 bg-background shadow-inner"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -97,10 +101,18 @@ export default function POSPage() {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" className="h-11 w-11">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-11 w-11"
+                        >
                             <IconUser className="size-5" />
                         </Button>
-                        <Button variant="outline" size="icon" className="h-11 w-11">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-11 w-11"
+                        >
                             <IconDeviceFloppy className="size-5" />
                         </Button>
                     </div>
@@ -109,29 +121,38 @@ export default function POSPage() {
                 <div className="flex-1 overflow-y-auto p-4">
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         {/* Placeholder products */}
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => (
-                            <Card 
-                                key={i} 
-                                className="group cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden border-border/50"
-                                onClick={() => addToCart({
-                                    id: `${i}`,
-                                    name: `Premium Item ${i}`,
-                                    sku: `SKU-00${i}`,
-                                    price: 1200 + (i * 100),
-                                    quantity: 1
-                                })}
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                            <Card
+                                key={i}
+                                className="py-0 group cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden border-border/50"
+                                onClick={() =>
+                                    addToCart({
+                                        id: `${i}`,
+                                        name: `Premium Item ${i}`,
+                                        sku: `SKU-00${i}`,
+                                        price: 1200 + i * 100,
+                                        quantity: 1,
+                                    })
+                                }
                             >
                                 <div className="aspect-square bg-muted relative">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                                     <div className="absolute bottom-2 right-2">
-                                        <Badge variant="secondary" className="bg-white/90 dark:bg-black/90 backdrop-blur shadow-sm">
-                                            {1200 + (i * 100)} ৳
+                                        <Badge
+                                            variant="secondary"
+                                            className="bg-white/90 dark:bg-black/90 backdrop-blur shadow-sm"
+                                        >
+                                            {1200 + i * 100} ৳
                                         </Badge>
                                     </div>
                                 </div>
                                 <CardContent className="p-3">
-                                    <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">Premium Item {i}</h3>
-                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">SKU-00{i}</p>
+                                    <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                                        Premium Item {i}
+                                    </h3>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                        SKU-00{i}
+                                    </p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -144,9 +165,14 @@ export default function POSPage() {
                 <header className="p-4 border-b bg-primary text-primary-foreground flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <IconShoppingCart className="size-5" />
-                        <h2 className="font-bold tracking-tight text-lg">Current Order</h2>
+                        <h2 className="font-bold tracking-tight text-lg">
+                            Current Order
+                        </h2>
                     </div>
-                    <Badge variant="outline" className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20">
+                    <Badge
+                        variant="outline"
+                        className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20"
+                    >
                         {cart.length} Items
                     </Badge>
                 </header>
@@ -158,39 +184,54 @@ export default function POSPage() {
                             <p className="text-sm font-medium">Cart is empty</p>
                         </div>
                     ) : (
-                        cart.map(item => (
-                            <div key={item.id} className="flex gap-3 group animate-in slide-in-from-right-4 duration-200">
+                        cart.map((item) => (
+                            <div
+                                key={item.id}
+                                className="flex gap-3 group animate-in slide-in-from-right-4 duration-200"
+                            >
                                 <div className="size-12 rounded bg-muted shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start">
-                                        <h4 className="text-sm font-medium truncate">{item.name}</h4>
-                                        <span className="text-sm font-bold">{item.price * item.quantity} ৳</span>
+                                        <h4 className="text-sm font-medium truncate">
+                                            {item.name}
+                                        </h4>
+                                        <span className="text-sm font-bold">
+                                            {item.price * item.quantity} ৳
+                                        </span>
                                     </div>
                                     <div className="flex items-center justify-between mt-1">
                                         <div className="flex items-center gap-1">
-                                            <Button 
-                                                variant="outline" 
-                                                size="icon" 
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
                                                 className="size-6 rounded-full"
-                                                onClick={() => updateQuantity(item.id, -1)}
+                                                onClick={() =>
+                                                    updateQuantity(item.id, -1)
+                                                }
                                             >
                                                 <IconMinus className="size-3" />
                                             </Button>
-                                            <span className="w-8 text-center text-xs font-medium">{item.quantity}</span>
-                                            <Button 
-                                                variant="outline" 
-                                                size="icon" 
+                                            <span className="w-8 text-center text-xs font-medium">
+                                                {item.quantity}
+                                            </span>
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
                                                 className="size-6 rounded-full"
-                                                onClick={() => updateQuantity(item.id, 1)}
+                                                onClick={() =>
+                                                    updateQuantity(item.id, 1)
+                                                }
                                             >
                                                 <IconPlus className="size-3" />
                                             </Button>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon" 
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             className="size-8 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                                            onClick={() => removeFromCart(item.id)}
+                                            onClick={() =>
+                                                removeFromCart(item.id)
+                                            }
                                         >
                                             <IconTrash className="size-4" />
                                         </Button>
@@ -214,22 +255,37 @@ export default function POSPage() {
                         <Separator className="my-2" />
                         <div className="flex justify-between text-lg font-bold">
                             <span>Total</span>
-                            <span className="text-primary">{total.toFixed(2)} ৳</span>
+                            <span className="text-primary">
+                                {total.toFixed(2)} ৳
+                            </span>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                        <Button variant="outline" className="h-14 gap-2 flex-col items-center justify-center py-0">
+                        <Button
+                            variant="outline"
+                            className="h-14 gap-2 flex-col items-center justify-center py-0"
+                        >
                             <IconCash className="size-5" />
-                            <span className="text-[10px] uppercase font-bold tracking-wider">Cash</span>
+                            <span className="text-[10px] uppercase font-bold tracking-wider">
+                                Cash
+                            </span>
                         </Button>
-                        <Button variant="outline" className="h-14 gap-2 flex-col items-center justify-center py-0">
+                        <Button
+                            variant="outline"
+                            className="h-14 gap-2 flex-col items-center justify-center py-0"
+                        >
                             <IconCreditCard className="size-5" />
-                            <span className="text-[10px] uppercase font-bold tracking-wider">Card</span>
+                            <span className="text-[10px] uppercase font-bold tracking-wider">
+                                Card
+                            </span>
                         </Button>
                     </div>
-                    
-                    <Button className="w-full h-14 text-lg font-bold gap-2 shadow-lg shadow-primary/20" disabled={cart.length === 0}>
+
+                    <Button
+                        className="w-full h-14 text-lg font-bold gap-2 shadow-lg shadow-primary/20"
+                        disabled={cart.length === 0}
+                    >
                         PAY {total.toFixed(2)} ৳
                         <IconChevronRight className="size-5" />
                     </Button>
